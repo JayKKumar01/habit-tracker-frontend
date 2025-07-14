@@ -15,17 +15,19 @@ function App() {
     const randomId = Math.floor(Math.random() * 100000);
     const name = "User" + randomId;
     const email = `user${randomId}@example.com`;
+    const password = `pass${randomId}`; // 🔐 Random dummy password
 
     const res = await fetch(BASE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email }),
+      body: JSON.stringify({ name, email, password }),
     });
 
     const data = await res.json();
     console.log("User created:", data);
     await getAllUsers();
   };
+
 
   const getAllUsers = async () => {
     const res = await fetch(BASE_URL);
@@ -46,11 +48,13 @@ function App() {
     setUserResult(`Name: ${user.name}, Email: ${user.email}`);
   };
 
-  const deleteUser = async () => {
-    await fetch(`${BASE_URL}/${deleteId}`, { method: "DELETE" });
-    console.log("User deleted:", deleteId);
+  const deleteUser = async (id) => {
+    await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+    console.log("User deleted:", id);
+    setDeleteId("");
     await getAllUsers();
   };
+
 
   return (
     <div className="container">
@@ -71,9 +75,15 @@ function App() {
         <div id="userListWrapper">
           <ul className="list">
             {users.map((u) => (
-              <li key={u.id}>
-                ID: {u.id}, Name: {u.name}, Email: {u.email}
-              </li>
+                <li key={u.id}>
+                  ID: {u.id}, Name: {u.name}, Email: {u.email}
+                  <button
+                      className="btn danger small delete-btn"
+                      onClick={() => deleteUser(u.id)}
+                  >
+                    X
+                  </button>
+                </li>
             ))}
           </ul>
         </div>
@@ -102,7 +112,7 @@ function App() {
             onChange={(e) => setDeleteId(e.target.value)}
             placeholder="User ID"
           />
-          <button className="btn danger" onClick={deleteUser}>
+          <button className="btn danger"  onClick={() => deleteUser(deleteId)}>
             Delete
           </button>
         </div>

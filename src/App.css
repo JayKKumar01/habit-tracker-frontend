@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-  max-width: 500px;
+  max-width: 600px;
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -143,3 +143,25 @@ input {
 #userResult:empty {
   display: none;
 }
+
+.btn.small {
+  margin-left: 10px;
+  padding: 2px 10px;
+  font-size: 16px;
+  line-height: 1;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.delete-btn {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.delete-btn:hover {
+  background-color: #e04445;
+}
+
