@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import "./App.css";
 
-const BASE_URL = "http://51.20.106.95:8080/api/users";
+const LOCAL = "http://localhost:8080";
+const AWS = "http://16.16.103.106:8080";
+const BASE_URL = LOCAL+"/api/users";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -22,14 +24,15 @@ function App() {
 
     const data = await res.json();
     console.log("User created:", data);
-    getAllUsers();
+    await getAllUsers();
   };
 
   const getAllUsers = async () => {
     const res = await fetch(BASE_URL);
-    const users = await res.json();
-    setUsers(users);
+    const data = await res.json();
+    setUsers(data);
   };
+
 
   const getUserById = async () => {
     const res = await fetch(`${BASE_URL}/${userId}`);
@@ -46,7 +49,7 @@ function App() {
   const deleteUser = async () => {
     await fetch(`${BASE_URL}/${deleteId}`, { method: "DELETE" });
     console.log("User deleted:", deleteId);
-    getAllUsers();
+    await getAllUsers();
   };
 
   return (
