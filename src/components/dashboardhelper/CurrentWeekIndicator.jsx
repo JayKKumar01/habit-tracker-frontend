@@ -1,14 +1,14 @@
 import React from "react";
 import "./CurrentWeekIndicator.css";
 
-const CurrentWeekIndicator = ({ createdAt }) => {
-    const getCurrentWeek = () => {
-        const createdDate = new Date(createdAt);
+const CurrentWeekIndicator = ({ user }) => {
+    const getWeekAndDay = () => {
+        const createdDate = new Date(user.createdAt);
         const now = new Date();
 
         const startOfWeek = (date) => {
             const day = date.getDay();
-            const diff = (day === 0 ? -6 : 1) - day; // convert Sunday (0) to Monday-start
+            const diff = (day === 0 ? -6 : 1) - day; // Adjust so week starts on Monday
             const monday = new Date(date);
             monday.setDate(date.getDate() + diff);
             monday.setHours(0, 0, 0, 0);
@@ -19,10 +19,15 @@ const CurrentWeekIndicator = ({ createdAt }) => {
         const todayMonday = startOfWeek(now);
 
         const weeksPassed = Math.floor((todayMonday - createdMonday) / (7 * 24 * 60 * 60 * 1000));
-        return `Week ${weeksPassed + 1}`;
+        const currentWeek = weeksPassed + 1;
+
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const currentDay = daysOfWeek[now.getDay()];
+
+        return `Week ${currentWeek} - ${currentDay}`;
     };
 
-    return <div className="current-week">{getCurrentWeek()}</div>;
+    return <div className="current-week">{getWeekAndDay()}</div>;
 };
 
 export default CurrentWeekIndicator;
