@@ -1,45 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import BASE_URL from "../config/config";
+import { verifyToken } from "../services/authService";
 
 const ProtectedRoute = ({ children }) => {
-    const [authorized, setAuthorized] = useState(null);
+    const [authorizedUser, setAuthorizedUser] = useState(null);
 
     useEffect(() => {
-        const verifyToken = async () => {
-            const token = localStorage.getItem("token");
-            const email = localStorage.getItem("email");
-
-            if (!token || !email) {
-                setAuthorized(false);
-                return;
-            }
-
-            try {
-                const res = await fetch(`${BASE_URL}/users?email=${email}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (res.ok) {
-                    const user = await res.json();
-                    setAuthorized(user); // pass user to children
-                } else {
-                    setAuthorized(false);
-                }
-            } catch {
-                setAuthorized(false);
-            }
-        };
-
-        verifyToken();
+        // Immediately invoke async function inside useEffect
+        (async () => {
+            const user = await verifyToken();
+            setAuthorizedUser(user || false);
+        })();
     }, []);
 
-    if (authorized === null) return <p>Loading...</p>;
-    if (authorized === false) return <Navigate to="/login" />;
+    if (authorizedUser === null) return <p>Loading...</p>;
+    if (authorizedUser === false) return <Navigate to="/login" />;
 
-    return children(authorized); // Call children as a function
+    return children(authorizedUser); // children must be a function that receives the user
 };
 
 export default ProtectedRoute;
