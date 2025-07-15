@@ -1,4 +1,3 @@
-// components/dashboardhelper/TodaysTaskList.jsx
 import React from "react";
 import "./TodaysTaskList.css";
 
@@ -9,13 +8,15 @@ const TodaysTaskList = ({ habits }) => {
             {habits.length === 0 ? (
                 <p>No habits for today 🎉</p>
             ) : (
-                <ul className="task-list">
-                    {habits.map((habit) => (
-                        <li key={habit.id} className={habit.completedToday ? "task done" : "task pending"}>
-                            {habit.title} {habit.completedToday ? "✅" : "❌"}
-                        </li>
-                    ))}
-                </ul>
+                <div className="task-list-wrapper">
+                    <ul className="task-list">
+                        {habits.map((habit) => (
+                            <li key={habit.id} className={habit.completedToday ? "task done" : "task pending"}>
+                                {habit.title} {habit.completedToday ? "✅" : "❌"}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             )}
         </div>
     );

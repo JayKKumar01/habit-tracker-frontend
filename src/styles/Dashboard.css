@@ -1,6 +1,5 @@
-/* styles/Dashboard.css */
-
 .dashboard-wrapper {
+    width: 90%;
     max-width: 1200px;
     margin: 40px auto;
     padding: 40px;
@@ -8,21 +7,48 @@
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
-.dashboard-header {
-    margin-bottom: 40px;
+/* Header layout */
+.dashboard-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
 }
 
-.dashboard-header h1 {
-    margin: 0;
+.welcome-text {
     font-size: 26px;
     color: #2e7d32;
-    text-align: left;
+    margin: 0;
 }
 
+/* Week text in center */
+.dashboard-header-row > .current-week {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e88e5;
+}
+
+/* Profile and Today’s Task Row */
 .dashboard-row {
+    margin-top: 40px; /* ✅ Add here instead */
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 20px;
+    align-items: stretch;
+    height: 160px;
+}
+
+
+/* Habit section below */
+.habit-overview-section {
+    margin-top: 40px;
+    display: block;
+    width: 100%;
 }
