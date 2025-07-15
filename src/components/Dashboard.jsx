@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/Dashboard.css";
 import UserInfoCard from "./dashboardhelper/UserInfoCard";
 import LogoutButton from "./dashboardhelper/LogoutButton";
@@ -7,6 +7,12 @@ import CurrentWeekIndicator from "./dashboardhelper/CurrentWeekIndicator";
 import AddHabitButton from "./dashboard/AddHabitButton";
 
 const Dashboard = ({ user }) => {
+    const [refreshTodayTasks, setRefreshTodayTasks] = useState(0);
+
+    const handleHabitCreated = () => {
+        setRefreshTodayTasks(prev => prev + 1);
+    };
+
     return (
         <div className="dashboard-wrapper">
             {/* 🔰 App Title Row */}
@@ -18,12 +24,12 @@ const Dashboard = ({ user }) => {
             <div className="dashboard-header-row">
                 <h1 className="welcome-text">🎯 Welcome, {user.name}</h1>
                 <CurrentWeekIndicator user={user} />
-                <AddHabitButton email={user.email} />
+                <AddHabitButton email={user.email} onHabitCreated={handleHabitCreated} />
             </div>
 
             <div className="dashboard-row">
                 <UserInfoCard user={user} />
-                <TodayTaskList habits={null} />
+                <TodayTaskList user={user} refreshKey={refreshTodayTasks} />
             </div>
         </div>
     );

@@ -1,31 +1,15 @@
 import React, { useState } from "react";
 import { createHabit } from "../../services/habitAuthService";
+import {
+    getTodayISTDateStr,
+    getThisWeekSaturdayIST,
+    daysOfWeek,
+} from "../../utils/dateUtils";
 import "../../styles/HabitForm.css";
 
-const daysOfWeek = [
-    "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
-    "FRIDAY", "SATURDAY", "SUNDAY"
-];
-
-const formatDateIST = (date) => {
-    const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in ms
-    const localDate = new Date(date.getTime() + istOffset);
-    return localDate.toISOString().split("T")[0];
-};
-
-const getThisWeekSaturday = () => {
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // Sunday = 0, Saturday = 6
-    const daysUntilSaturday = 6 - dayOfWeek;
-    const saturday = new Date(today);
-    saturday.setDate(today.getDate() + daysUntilSaturday);
-    return formatDateIST(saturday);
-};
-
-
 const HabitForm = ({ email, onSuccess, onClose }) => {
-    const todayStr = formatDateIST(new Date());
-    const maxDateStr = getThisWeekSaturday();
+    const todayStr = getTodayISTDateStr();
+    const maxDateStr = getThisWeekSaturdayIST();
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -33,6 +17,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
     const [targetDays, setTargetDays] = useState(new Set());
     const [startDate, setStartDate] = useState(todayStr);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const toggleDay = (day) => {
         const updated = new Set(targetDays);
@@ -42,16 +27,41 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(""); // clear previous error
+        setError("");
+        setLoading(true);
 
         if (!description.trim()) {
             setError("Description is required.");
+            setLoading(false);
             return;
         }
 
-        if (frequency === "WEEKLY" && targetDays.size === 0) {
-            setError("Please select at least one target day for weekly habit.");
-            return;
+        if (frequency === "WEEKLY") {
+            if (targetDays.size === 0) {
+                setError("Please select at least one target day for weekly habit.");
+                setLoading(false);
+                return;
+            }
+
+            // ✅ Reject if any selected day is before startDate's day
+            const startDateObj = new Date(startDate);
+            const startDayIndex = startDateObj.getDay(); // 0 (Sun) to 6 (Sat)
+            const startDayName = daysOfWeek[startDayIndex === 0 ? 6 : startDayIndex - 1]; // Map to "MONDAY"...
+
+            const dayIndex = (day) => daysOfWeek.indexOf(day);
+            const invalidDays = Array.from(targetDays).filter(
+                (day) => dayIndex(day) < dayIndex(startDayName)
+            );
+
+            if (invalidDays.length > 0) {
+                setError(
+                    `Selected day(s) [${invalidDays.join(
+                        ", "
+                    )}] occur before the start date. Please adjust the start date or selected days.`
+                );
+                setLoading(false);
+                return;
+            }
         }
 
         const payload = {
@@ -71,6 +81,8 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
             onClose();
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -99,7 +111,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                         value={frequency}
                         onChange={(e) => {
                             setFrequency(e.target.value);
-                            setTargetDays(new Set()); // reset when switching
+                            setTargetDays(new Set());
                         }}
                     >
                         <option value="DAILY">Daily</option>
@@ -134,10 +146,13 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                         required
                     />
 
-
                     <div className="form-buttons">
-                        <button type="submit">Create</button>
-                        <button type="button" onClick={onClose}>Cancel</button>
+                        <button type="submit" disabled={loading}>
+                            {loading ? "Creating..." : "Create"}
+                        </button>
+                        <button type="button" onClick={onClose} disabled={loading}>
+                            Cancel
+                        </button>
                     </div>
                 </form>
             </div>

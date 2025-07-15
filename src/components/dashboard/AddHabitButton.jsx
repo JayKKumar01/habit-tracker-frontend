@@ -1,17 +1,17 @@
-// components/habit/AddHabitButton.jsx
 import React, { useState } from "react";
 import "../../styles/AddHabitButton.css";
 import HabitForm from "../habit/HabitForm";
 
-const AddHabitButton = ({ email }) => {
+const AddHabitButton = ({ email, onHabitCreated }) => {
     const [showForm, setShowForm] = useState(false);
 
     const handleOpenForm = () => setShowForm(true);
     const handleCloseForm = () => setShowForm(false);
 
     const handleHabitCreated = (habit) => {
-        console.log("New habit created:", habit); // ✅ Log the HabitResponseDTO
-        handleCloseForm(); // close the form after success
+        console.log("New habit created:", habit);
+        onHabitCreated?.(); // ✅ Notify parent to refresh
+        handleCloseForm();
     };
 
     return (
