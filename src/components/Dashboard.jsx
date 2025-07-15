@@ -18,7 +18,7 @@ const Dashboard = ({ user }) => {
             <div className="dashboard-header-row">
                 <h1 className="welcome-text">🎯 Welcome, {user.name}</h1>
                 <CurrentWeekIndicator user={user} />
-                <AddHabitButton/>
+                <AddHabitButton email={user.email} />
             </div>
 
             <div className="dashboard-row">

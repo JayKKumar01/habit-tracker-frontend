@@ -1,15 +1,33 @@
-import React from "react";
+// components/habit/AddHabitButton.jsx
+import React, { useState } from "react";
 import "../../styles/AddHabitButton.css";
+import HabitForm from "../habit/HabitForm";
 
-const AddHabitButton = () => {
-    const handleClick = () => {
-        alert("Open add habit form (coming soon)");
+const AddHabitButton = ({ email }) => {
+    const [showForm, setShowForm] = useState(false);
+
+    const handleOpenForm = () => setShowForm(true);
+    const handleCloseForm = () => setShowForm(false);
+
+    const handleHabitCreated = (habit) => {
+        console.log("New habit created:", habit); // ✅ Log the HabitResponseDTO
+        handleCloseForm(); // close the form after success
     };
 
     return (
-        <button className="add-habit-btn" onClick={handleClick}>
-            ➕ Add Habit
-        </button>
+        <>
+            <button className="add-habit-btn" onClick={handleOpenForm}>
+                ➕ Add Habit
+            </button>
+
+            {showForm && (
+                <HabitForm
+                    email={email}
+                    onSuccess={handleHabitCreated}
+                    onClose={handleCloseForm}
+                />
+            )}
+        </>
     );
 };
 

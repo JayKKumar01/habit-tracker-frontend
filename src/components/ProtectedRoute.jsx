@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { verifyToken } from "../services/authService";
+import { verifyToken } from "../services/userAuthService";
 
 const ProtectedRoute = ({ children }) => {
     const [authorizedUser, setAuthorizedUser] = useState(null);
