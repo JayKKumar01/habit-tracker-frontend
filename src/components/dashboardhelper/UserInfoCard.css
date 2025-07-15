@@ -1,0 +1,22 @@
+/* components/dashboardhelper/UserInfoCard.css */
+
+.user-info-card {
+    background-color: #f0f4ff;
+    padding: 24px;
+    border-left: 6px solid #1976d2;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.user-info-card h2 {
+    margin-top: 0;
+    color: #2e3a59;
+}
+
+.user-info-card p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #333;
+}

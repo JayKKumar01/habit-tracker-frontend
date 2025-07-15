@@ -1,29 +1,56 @@
+// components/Dashboard.jsx
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/Dashboard.css";
+import UserInfoCard from "./dashboardhelper/UserInfoCard";
+import LogoutButton from "./dashboardhelper/LogoutButton";
+import TodayTaskList from "./dashboardhelper/TodaysTaskList";
+import HabitOverviewGrid from "./dashboardhelper/HabitOverviewGrid";
+
+// Dummy habits
+const dummyHabits = [
+    {
+        id: 1,
+        title: "Drink Water",
+        completedToday: true,
+        frequency: "Daily",
+        currentStreak: 4,
+        completionRate: 90
+    },
+    {
+        id: 2,
+        title: "Meditate",
+        completedToday: false,
+        frequency: "Daily",
+        currentStreak: 2,
+        completionRate: 70
+    },
+    {
+        id: 3,
+        title: "Read Book",
+        completedToday: false,
+        frequency: "Daily",
+        currentStreak: 1,
+        completionRate: 30
+    },
+];
 
 const Dashboard = ({ user }) => {
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("email");
-        navigate("/login");
-    };
-
     return (
-        <div className="dashboard-container">
-            <h2>Welcome to your Dashboard 🎯</h2>
+        <div className="dashboard-wrapper">
+            <LogoutButton />
 
-            <div className="user-card">
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleString()}</p>
+            <div className="dashboard-header">
+                <h1>🎯 Welcome, {user.name}</h1>
             </div>
 
-            <button className="logout-btn" onClick={handleLogout}>
-                🔒 Logout
-            </button>
+            {/* Row: Profile and Today’s Tasks */}
+            <div className="dashboard-row">
+                <UserInfoCard user={user} />
+                <TodayTaskList habits={dummyHabits} />
+            </div>
+
+            {/* Row: Horizontal Scrollable Habit Cards */}
+            <HabitOverviewGrid habits={dummyHabits} />
         </div>
     );
 };

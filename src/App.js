@@ -4,48 +4,46 @@ import SignupForm from "./components/SignupForm";
 import LoginForm from "./components/LoginForm";
 import Dashboard from "./components/Dashboard";
 import AuthLink from "./components/AuthLink";
-import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
 
 function App() {
     return (
-        <div className="container">
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <>
-                            <h1>Habit Tracker - Signup</h1>
-                            <SignupForm />
-                            <AuthLink type="login" />
-                        </>
-                    }
-                />
-                <Route
-                    path="/login"
-                    element={
-                        <>
-                            <h1>Habit Tracker - Login</h1>
-                            <LoginForm />
-                            <AuthLink type="signup" />
-                        </>
-                    }
-                />
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            {(user) => (
-                                <>
-                                    <h1>Dashboard</h1>
-                                    <Dashboard user={user} />
-                                </>
-                            )}
-                        </ProtectedRoute>
-                    }
-                />
-            </Routes>
-        </div>
+        <Routes>
+            {/* Signup Page */}
+            <Route
+                path="/"
+                element={
+                    <div className="container">
+                        <h1>Habit Tracker - Signup</h1>
+                        <SignupForm />
+                        <AuthLink type="login" />
+                    </div>
+                }
+            />
+
+            {/* Login Page */}
+            <Route
+                path="/login"
+                element={
+                    <div className="container">
+                        <h1>Habit Tracker - Login</h1>
+                        <LoginForm />
+                        <AuthLink type="signup" />
+                    </div>
+                }
+            />
+
+            {/* Dashboard Page — no container wrapper */}
+            <Route
+                path="/dashboard"
+                element={
+                    <ProtectedRoute>
+                        {(user) => <Dashboard user={user} />}
+                    </ProtectedRoute>
+                }
+            />
+        </Routes>
     );
 }
 

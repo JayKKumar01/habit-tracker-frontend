@@ -1,0 +1,38 @@
+/* components/dashboardhelper/TodaysTaskList.css */
+
+.todays-task-card {
+    background-color: #fff4e5;
+    padding: 24px;
+    border-left: 6px solid #ff9800;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    max-width: 500px;
+    margin-left: 20px;
+    flex: 1;
+}
+
+.todays-task-card h2 {
+    margin-top: 0;
+    color: #e65100;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 12px;
+}
+
+.task {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.task.done {
+    color: green;
+    font-weight: bold;
+}
+
+.task.pending {
+    color: red;
+    font-weight: bold;
+}
