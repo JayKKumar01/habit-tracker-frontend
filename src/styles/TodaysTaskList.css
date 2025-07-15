@@ -57,3 +57,34 @@
     color: red;
     font-weight: bold;
 }
+.empty-task-placeholder {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.no-habit-text {
+    font-size: 16px;
+    color: #8a6d3b;
+    margin-bottom: 16px;
+}
+
+.add-habit-btn-today {
+    background-color: #ff9800;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.add-habit-btn:hover {
+    background-color: #e68900;
+}

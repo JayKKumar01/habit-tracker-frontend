@@ -6,10 +6,36 @@
     background-color: #ffffff;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-    position: relative;
     display: flex;
     flex-direction: column;
+
+    /* ✅ Make it adapt to content height */
+    min-height: calc(100vh - 80px); /* so it always fills most of the screen */
+    box-sizing: border-box;
 }
+
+.dashboard-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    /* 🔹 Modern contrast effect */
+    background-color: #f0f4ff;
+    padding: 20px 24px;
+    border-radius: 12px;
+    border: 1px solid #d0dfff;
+    box-shadow: 0 4px 12px rgba(63, 81, 181, 0.05);
+}
+.app-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #3f51b5 !important;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+
 
 /* Header layout */
 .dashboard-header-row {
@@ -21,7 +47,7 @@
 
 .welcome-text {
     font-size: 26px;
-    color: #2e7d32;
+    color: #ff9800;
     margin: 0;
 }
 
