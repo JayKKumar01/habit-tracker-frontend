@@ -1,0 +1,44 @@
+.dashboard-container {
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.user-card {
+    margin-top: 20px;
+    text-align: left;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f4f9ff;
+    border-left: 4px solid #0077ff;
+}
+
+.user-card p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.user-card strong {
+    color: #0077ff;
+}
+.logout-btn {
+    margin-top: 24px;
+    padding: 10px 16px;
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #e60000;
+}
