@@ -1,4 +1,4 @@
-/* Backdrop to dim the background */
+/* === Backdrop overlay === */
 .habit-form-backdrop {
     position: fixed;
     top: 0;
@@ -12,7 +12,7 @@
     z-index: 1000;
 }
 
-/* Modal container */
+/* === Modal Container === */
 .habit-form-modal {
     background-color: #fff;
     padding: 2rem;
@@ -26,7 +26,14 @@
     gap: 1rem;
 }
 
-/* Form elements */
+/* === Typography === */
+.habit-form-modal h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+/* === Inputs, Textareas, Selects === */
 .habit-form-modal input[type="text"],
 .habit-form-modal input[type="date"],
 .habit-form-modal textarea,
@@ -37,7 +44,7 @@
     border-radius: 8px;
     font-size: 14px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s ease;
 }
 
 .habit-form-modal input:focus,
@@ -46,14 +53,14 @@
     border-color: #007bff;
 }
 
-/* Label text */
+/* === Labels === */
 .habit-form-modal label {
     font-weight: 500;
-    margin-bottom: 4px;
     font-size: 14px;
+    margin-bottom: 4px;
 }
 
-/* Target day buttons */
+/* === Weekly Day Selection === */
 .day-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -62,10 +69,11 @@
 
 .day-buttons button {
     padding: 6px 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #bbb;             /* darker border for visibility */
     border-radius: 6px;
-    background-color: #f5f5f5;
+    background-color: #fafafa;          /* slightly whiter */
     font-size: 13px;
+    color: #333;                        /* darker text */
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -76,7 +84,7 @@
     border-color: #007bff;
 }
 
-/* Form action buttons */
+/* === Form Buttons === */
 .form-buttons {
     display: flex;
     justify-content: space-between;
@@ -109,7 +117,7 @@
     background-color: #b3b3b3;
 }
 
-/* Error message */
+/* === Error Message === */
 .error {
     color: red;
     font-size: 13px;
@@ -117,7 +125,7 @@
     margin-bottom: -5px;
 }
 
-/* Smooth modal fade-in */
+/* === Modal Entrance Animation === */
 @keyframes fadeIn {
     from {
         opacity: 0;

@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import "../styles/Dashboard.css";
 import UserInfoCard from "./dashboardhelper/UserInfoCard";
 import LogoutButton from "./dashboardhelper/LogoutButton";
-import TodayTaskList from "./dashboard/TodaysTaskList";
 import CurrentWeekIndicator from "./dashboardhelper/CurrentWeekIndicator";
+import TodaysTaskList from "./dashboard/TodaysTaskList";
 import AddHabitButton from "./dashboard/AddHabitButton";
 
 const Dashboard = ({ user }) => {
-    const [refreshTodayTasks, setRefreshTodayTasks] = useState(0);
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    const handleHabitCreated = () => {
-        setRefreshTodayTasks(prev => prev + 1);
+    const triggerRefresh = () => {
+        setRefreshKey((prev) => prev + 1);
     };
 
     return (
@@ -21,15 +21,17 @@ const Dashboard = ({ user }) => {
                 <LogoutButton />
             </div>
 
+            {/* 👤 Welcome and Controls Row */}
             <div className="dashboard-header-row">
                 <h1 className="welcome-text">🎯 Welcome, {user.name}</h1>
                 <CurrentWeekIndicator user={user} />
-                <AddHabitButton email={user.email} onHabitCreated={handleHabitCreated} />
+                <AddHabitButton email={user.email} onHabitCreated={triggerRefresh} />
             </div>
 
+            {/* 🗓️ Main Content Row */}
             <div className="dashboard-row">
                 <UserInfoCard user={user} />
-                <TodayTaskList user={user} refreshKey={refreshTodayTasks} />
+                <TodaysTaskList user={user} refreshKey={refreshKey} triggerRefresh={triggerRefresh} />
             </div>
         </div>
     );

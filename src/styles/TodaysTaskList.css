@@ -13,7 +13,7 @@
 }
 
 .todays-task-card h2 {
-    margin: 0;               /* 👈 removes default spacing */
+    margin: 0;
     color: #e65100;
     font-size: 20px;
 }
@@ -21,14 +21,7 @@
 .task-list-wrapper {
     flex-grow: 1;
     overflow-y: auto;
-    margin-top: 12px;        /* 👈 replaces top padding for tighter layout */
-}
-
-/* Scrollable list inside wrapper */
-.task-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    margin-top: 12px;
 }
 
 /* Scrollbar styling */
@@ -43,20 +36,55 @@
     background: transparent;
 }
 
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 .task {
-    font-size: 16px;
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    margin-bottom: 8px;
 }
 
-.task.done {
-    color: green;
-    font-weight: bold;
+.task-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    line-height: 1.4;
 }
 
-.task.pending {
-    color: red;
-    font-weight: bold;
+.task-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+    accent-color: #4caf50;
+    cursor: default;
 }
+
+.task-title {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* ✅ Status styles */
+.task.done .task-title {
+    color: #4caf50;
+    font-weight: bold;
+    text-decoration: line-through;
+}
+
+.task.pending .task-title {
+    color: #f44336;
+    font-weight: 500;
+}
+
+/* Empty state */
 .empty-task-placeholder {
     flex-grow: 1;
     display: flex;
@@ -85,6 +113,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.add-habit-btn:hover {
+.add-habit-btn-today:hover {
     background-color: #e68900;
 }

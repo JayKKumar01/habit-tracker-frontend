@@ -3,28 +3,25 @@ import "../../styles/AddHabitButton.css";
 import HabitForm from "../habit/HabitForm";
 
 const AddHabitButton = ({ email, onHabitCreated }) => {
-    const [showForm, setShowForm] = useState(false);
+    const [open, setOpen] = useState(false);
 
-    const handleOpenForm = () => setShowForm(true);
-    const handleCloseForm = () => setShowForm(false);
-
-    const handleHabitCreated = (habit) => {
+    const handleCreated = (habit) => {
         console.log("New habit created:", habit);
-        onHabitCreated?.(); // ✅ Notify parent to refresh
-        handleCloseForm();
+        onHabitCreated?.(); // Notify parent
+        setOpen(false);
     };
 
     return (
         <>
-            <button className="add-habit-btn" onClick={handleOpenForm}>
+            <button className="add-habit-btn" onClick={() => setOpen(true)}>
                 ➕ Add Habit
             </button>
 
-            {showForm && (
+            {open && (
                 <HabitForm
                     email={email}
-                    onSuccess={handleHabitCreated}
-                    onClose={handleCloseForm}
+                    onSuccess={handleCreated}
+                    onClose={() => setOpen(false)}
                 />
             )}
         </>
