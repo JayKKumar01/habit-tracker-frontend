@@ -63,9 +63,10 @@ const Dashboard = ({ user }) => {
 
             {/* Weekly logs for previous weeks can be added below */}
             <div className="weekly-logs-section">
-                <WeeklyLogCard weekNumber={3} habits={week3Habits} />
-                <WeeklyLogCard weekNumber={2} habits={week2Habits} />
-                <WeeklyLogCard weekNumber={1} habits={week1Habits} />
+                <WeeklyLogCard weekNumber={3} habits={week3Habits} defaultOpen={true} />
+                <WeeklyLogCard weekNumber={2} habits={week2Habits} defaultOpen={false} />
+                <WeeklyLogCard weekNumber={1} habits={week1Habits} defaultOpen={false} />
+
             </div>
 
         </div>
