@@ -9,34 +9,47 @@ import { getUserHabits } from "../services/habitAuthService";
 import HabitOverviewGrid from "./dashboardhelper/HabitOverviewGrid";
 import WeeklyProgressBar from "./dashboardhelper/WeeklyProgressBar";
 import WeeklyLogCard from "./dashboardhelper/WeeklyLogCard";
+import TokenExpiryWatcher from "../services/TokenExpiryWatcher";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = ({ user }) => {
     const [habits, setHabits] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
 
-    const fetchHabits = async () => {
-        setLoading(true);
-        try {
-            const data = await getUserHabits(user.email);
-            setHabits(data);
-        } catch (err) {
-            console.error("Failed to load habits:", err.message);
-            setHabits([]);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
-        fetchHabits();
+        const fetchHabits = async () => {
+            setLoading(true);
+            try {
+                const data = await getUserHabits(user.email);
+                setHabits(data);
+            } catch (err) {
+                console.error("Failed to load habits:", err.message);
+                setHabits([]);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    }, [refreshKey]);
+        fetchHabits();
+    }, [refreshKey, user.email]);
 
     const triggerRefresh = () => setRefreshKey(prev => prev + 1);
 
     return (
         <div className="dashboard-wrapper">
+            {/* ✅ Token watcher (auto logout) */}
+            <TokenExpiryWatcher
+                token={token}
+                onExpire={() => {
+                    localStorage.clear();
+                    navigate("/login");
+                }}
+            />
+
             {/* 🔰 App Title Row */}
             <div className="dashboard-title-row">
                 <h1 className="app-title">Habit Tracker</h1>
@@ -58,9 +71,11 @@ const Dashboard = ({ user }) => {
                     triggerRefresh={triggerRefresh}
                 />
             </div>
+
             <div className="habit-overview-section">
                 <HabitOverviewGrid habits={habits} />
             </div>
+
             <div className="weekly-progress-section">
                 <WeeklyProgressBar habits={habits} />
             </div>
@@ -69,7 +84,6 @@ const Dashboard = ({ user }) => {
                 <WeeklyLogCard weekNumber={3} habits={habits} defaultOpen={true} />
                 <WeeklyLogCard weekNumber={2} habits={habits} defaultOpen={false} />
                 <WeeklyLogCard weekNumber={1} habits={habits} defaultOpen={false} />
-
             </div>
         </div>
     );
