@@ -16,6 +16,19 @@
     color: #0d47a1;
 }
 
+.habit-description {
+    font-style: italic;
+    font-size: 13px;
+    margin: 0 0 10px; /* ✅ Removed top margin */
+    color: #333;
+    background-color: #ffffff8a;
+    border-left: 3px solid #1976d2;
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+
+
 .habit-card p {
     margin: 6px 0;
     font-size: 14px;
@@ -36,4 +49,46 @@
 .delete-btn:hover {
     background: rgba(231, 76, 60, 0.1);
 }
+
+.weekly-tracker {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    gap: 4px;
+}
+
+.day-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 24px;
+    user-select: none;
+}
+
+/* Default greyed out */
+.day-indicator.grey {
+    background-color: #e0e0e0;
+    color: #555;
+}
+
+/* Completed – Green */
+.day-indicator.green {
+    background-color: #81c784;
+    color: white;
+}
+
+/* Missed – Red */
+.day-indicator.red {
+    background-color: #e57373;
+    color: white;
+}
+/* Orange border for today's day */
+.day-indicator.today-border {
+    border: 2px solid blue;
+}
+
+
 
