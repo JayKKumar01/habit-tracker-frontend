@@ -4,19 +4,44 @@ import { getCurrentWeekISTDates } from "../../utils/dateUtils";
 import { getAllHabitLogs } from "../../services/habitLogService";
 
 const HabitProgress = ({ habit, email }) => {
-    const { title, completionRate, id } = habit;
-    const [logs, setLogs] = useState([]);
+    const { title, id, targetDays = [] } = habit;
+    const [completionRate, setCompletionRate] = useState(0);
+
+    const daysLong = [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY",
+    ];
 
     useEffect(() => {
-        const fetchLogs = async () => {
+        const calculateProgress = async () => {
             const weekDates = getCurrentWeekISTDates();
             const logs = await getAllHabitLogs(email, id);
-            console.log("🔹 Current Week Dates:", weekDates);
-            console.log("🔹 All Logs for Habit:", logs);
-            setLogs(logs);
+
+            let applicableDays = 0;
+            let completedDays = 0;
+
+            weekDates.forEach((dateStr, idx) => {
+                const dayName = daysLong[idx]; // Get day name for current date index
+                if (targetDays.includes(dayName)) {
+                    applicableDays++;
+                    const log = logs.find(log => log.date === dateStr);
+                    if (log?.completed) completedDays++;
+                }
+            });
+
+            const rate = applicableDays === 0 ? 0 : Math.round((completedDays / applicableDays) * 100);
+
+            console.log(`📊 ${title}: ${completedDays}/${applicableDays} completed (${rate}%)`);
+
+            setCompletionRate(rate);
         };
 
-        fetchLogs();
+        calculateProgress();
     }, [habit, email]);
 
     return (
