@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./WeeklyLogCard.css";
+import "../../styles/WeeklyLogCard.css";
 
 const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 

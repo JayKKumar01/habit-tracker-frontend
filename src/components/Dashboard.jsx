@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Dashboard.css";
-import UserInfoCard from "./dashboardhelper/UserInfoCard";
-import LogoutButton from "./dashboardhelper/LogoutButton";
+import UserInfoCard from "./profile/UserInfoCard";
+import LogoutButton from "./authentication/LogoutButton";
 import TodayTaskList from "./dashboard/TodaysTaskList";
-import CurrentWeekIndicator from "./dashboardhelper/CurrentWeekIndicator";
+import CurrentWeekIndicator from "./header/CurrentWeekIndicator";
 import AddHabitButton from "./dashboard/AddHabitButton";
-import { getUserHabits } from "../services/habitAuthService";
-import HabitOverviewGrid from "./dashboardhelper/HabitOverviewGrid";
-import WeeklyProgressBar from "./dashboardhelper/WeeklyProgressBar";
-import WeeklyLogCard from "./dashboardhelper/WeeklyLogCard";
+import { getUserHabits } from "../services/habitService";
+import HabitOverviewGrid from "./habit/HabitOverviewGrid";
+import WeeklyProgressBar from "./habit_log/WeeklyProgressBar";
+import WeeklyLogCard from "./habit_log/WeeklyLogCard";
 import TokenExpiryWatcher from "../services/TokenExpiryWatcher";
 import { useNavigate } from "react-router-dom";
 
@@ -73,7 +73,8 @@ const Dashboard = ({ user }) => {
             </div>
 
             <div className="habit-overview-section">
-                <HabitOverviewGrid habits={habits} />
+                <HabitOverviewGrid habits={habits} email={user.email} triggerRefresh={triggerRefresh} />
+
             </div>
 
             <div className="weekly-progress-section">

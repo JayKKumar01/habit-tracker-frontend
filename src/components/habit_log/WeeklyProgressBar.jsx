@@ -1,6 +1,6 @@
 // components/dashboardhelper/WeeklyProgressBar.jsx
 import React from "react";
-import "./WeeklyProgressBar.css";
+import "../../styles/WeeklyProgressBar.css";
 
 const WeeklyProgressBar = ({ habits }) => {
     return (

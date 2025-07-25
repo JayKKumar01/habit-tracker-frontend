@@ -29,6 +29,24 @@ export const createHabit = async (habitData, email) => {
     return data;
 };
 
+// ✅ Soft delete a habit by ID (sets endDate)
+export const softDeleteHabit = async (email, id) => {
+    const res = await fetch(`${HABIT_URL}/soft-delete/${email}/${id}`, {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        const errorMsg = data.error || data.message || "Failed to soft delete habit.";
+        throw new Error(errorMsg);
+    }
+
+    return data; // returns { message: "Habit marked as ended." }
+};
+
+
 // ✅ Get all habits for a user
 export const getUserHabits = async (email) => {
     const res = await fetch(`${HABIT_URL}/user/${email}`, {
@@ -78,3 +96,4 @@ export const deleteHabit = async (id) => {
 
     return true; // Successfully deleted
 };
+

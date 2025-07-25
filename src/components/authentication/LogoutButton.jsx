@@ -1,7 +1,7 @@
 // components/dashboardhelper/LogoutButton.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./LogoutButton.css";
+import "../../styles/LogoutButton.css";
 
 const LogoutButton = () => {
     const navigate = useNavigate();

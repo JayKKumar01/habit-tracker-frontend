@@ -1,5 +1,5 @@
 import React from "react";
-import "./CurrentWeekIndicator.css";
+import "../../styles/CurrentWeekIndicator.css";
 
 const CurrentWeekIndicator = ({ user }) => {
     const getWeekAndDay = () => {

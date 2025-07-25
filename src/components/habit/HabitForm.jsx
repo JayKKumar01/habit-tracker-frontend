@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import { createHabit } from "../../services/habitAuthService";
+import { createHabit } from "../../services/habitService";
 import {
     getTodayISTDateStr,
-    getThisWeekSaturdayIST,
     daysOfWeek,
 } from "../../utils/dateUtils";
 import "../../styles/HabitForm.css";
 
 const HabitForm = ({ email, onSuccess, onClose }) => {
     const todayStr = getTodayISTDateStr();
-    const maxDateStr = getThisWeekSaturdayIST();
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -30,6 +28,12 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
         setError("");
         setLoading(true);
 
+        if (!title.trim()) {
+            setError("Title is required.");
+            setLoading(false);
+            return;
+        }
+
         if (!description.trim()) {
             setError("Description is required.");
             setLoading(false);
@@ -39,26 +43,6 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
         if (frequency === "WEEKLY") {
             if (targetDays.size === 0) {
                 setError("Please select at least one target day for weekly habit.");
-                setLoading(false);
-                return;
-            }
-
-            // ✅ Reject if any selected day is before startDate's day
-            const startDateObj = new Date(startDate);
-            const startDayIndex = startDateObj.getDay(); // 0 (Sun) to 6 (Sat)
-            const startDayName = daysOfWeek[startDayIndex === 0 ? 6 : startDayIndex - 1]; // Map to "MONDAY"...
-
-            const dayIndex = (day) => daysOfWeek.indexOf(day);
-            const invalidDays = Array.from(targetDays).filter(
-                (day) => dayIndex(day) < dayIndex(startDayName)
-            );
-
-            if (invalidDays.length > 0) {
-                setError(
-                    `Selected day(s) [${invalidDays.join(
-                        ", "
-                    )}] occur before the start date. Please adjust the start date or selected days.`
-                );
                 setLoading(false);
                 return;
             }
@@ -142,7 +126,6 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         min={todayStr}
-                        max={maxDateStr}
                         required
                     />
 

@@ -20,16 +20,6 @@ export const getTodayISTDay = () => {
     }).toUpperCase();
 };
 
-// ✅ Get this week's Saturday date (YYYY-MM-DD) in IST
-export const getThisWeekSaturdayIST = () => {
-    const today = getISTDate();
-    const dayOfWeek = today.getDay(); // Sunday = 0, Saturday = 6
-    const offset = 6 - dayOfWeek;
-    const saturday = new Date(today);
-    saturday.setDate(today.getDate() + offset);
-    return saturday.toISOString().split("T")[0];
-};
-
 // ✅ Export constant list of all days in order
 export const daysOfWeek = [
     "MONDAY",

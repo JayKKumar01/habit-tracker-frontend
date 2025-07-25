@@ -1,6 +1,6 @@
 // components/dashboardhelper/UserInfoCard.jsx
 import React from "react";
-import "./UserInfoCard.css";
+import "../../styles/UserInfoCard.css";
 
 const UserInfoCard = ({ user }) => {
     return (

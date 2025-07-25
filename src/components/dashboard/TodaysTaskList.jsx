@@ -10,8 +10,10 @@ const TodaysTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const todayHabits = habits.filter(
         (habit) =>
             habit.startDate <= todayDateStr &&
+            (!habit.endDate || habit.endDate >= todayDateStr) &&
             (habit.frequency === "DAILY" || habit.targetDays?.includes(todayDay))
     );
+
 
     const isEmpty = !loading && todayHabits.length === 0;
 
