@@ -7,34 +7,39 @@ import ConfirmModal from "../modals/ConfirmModal";
 
 const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [todayHabits, setTodayHabits] = useState([]);
+    const [isLogLoading, setIsLogLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [currentHabit, setCurrentHabit] = useState(null);
-    const todayDay = getTodayISTDay();
-    const todayDateStr = getTodayISTDateStr();
+    const [selectedHabit, setSelectedHabit] = useState(null);
+
+    const today = {
+        day: getTodayISTDay(),
+        dateStr: getTodayISTDateStr(),
+    };
 
     useEffect(() => {
-        if (loading || habits.length === 0) return;
+        const loadTodaysHabits = async () => {
+            if (loading || habits.length === 0) return;
 
-        const processHabits = async () => {
-            const validHabits = habits.filter((habit) => {
-                return habit.startDate <= todayDateStr &&
-                    (!habit.endDate || habit.endDate > todayDateStr) &&
-                    (habit.frequency === "DAILY" || habit.targetDays?.includes(todayDay));
-            });
+            setIsLogLoading(true);
 
-            const updatedHabits = await Promise.all(
-                validHabits.map(async (habit) => {
+            const validHabits = habits.filter(habit =>
+                habit.startDate <= today.dateStr &&
+                (!habit.endDate || habit.endDate > today.dateStr) &&
+                (habit.frequency === "DAILY" || habit.targetDays?.includes(today.day))
+            );
+
+            const enrichedHabits = await Promise.all(
+                validHabits.map(async habit => {
                     try {
                         const logs = await getAllHabitLogs(email, habit.id);
-                        console.log(`📘 Logs for habit ${habit.id}:`, logs);
+                        const todayLog = logs.find(log => log.date === today.dateStr);
 
-                        const todayLog = logs.find(log => log.date === todayDateStr);
                         return {
                             ...habit,
                             completedToday: todayLog?.completed || false,
                         };
                     } catch (err) {
-                        console.error(`❌ Failed to fetch logs for habit ${habit.id}:`, err.message);
+                        console.error(`❌ Error fetching logs for ${habit.title}:`, err.message);
                         return {
                             ...habit,
                             completedToday: false,
@@ -43,40 +48,41 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                 })
             );
 
-            setTodayHabits(updatedHabits);
+            setTodayHabits(enrichedHabits);
+            setIsLogLoading(false);
         };
 
-        processHabits();
+        loadTodaysHabits();
     }, [habits, loading, email]);
 
     const handleCheckboxChange = async () => {
-        if (!currentHabit) return;
-        console.log(`📦 Habit ID: ${currentHabit.id}, Checked: ${currentHabit.checked}`);
+        if (!selectedHabit) return;
 
         try {
+            const { id, checked } = selectedHabit;
             const response = await updateHabitLog(email, {
-                habitId: currentHabit.id,
-                date: todayDateStr,
-                completed: currentHabit.checked,
+                habitId: id,
+                date: today.dateStr,
+                completed: checked,
             });
 
-            console.log("✅ Habit log updated:", response);
-            triggerRefresh(); // Refresh the habits
-        } catch (error) {
-            console.error("❌ Failed to update habit log:", error.message);
+            console.log(`✅ Updated "${selectedHabit.title}" to ${checked ? "completed" : "incomplete"}`, response);
+            triggerRefresh();
+        } catch (err) {
+            console.error("❌ Failed to update habit log:", err.message);
         } finally {
             setModalOpen(false);
         }
     };
 
-    const isEmpty = !loading && todayHabits.length === 0;
+    const isEmpty = !loading && !isLogLoading && todayHabits.length === 0;
 
     return (
         <div className="todays-task-card">
             <h2>✅ Today's Tasks</h2>
 
-            {loading ? (
-                <p>Loading...</p>
+            {loading || isLogLoading ? (
+                <p>Loading habits...</p>
             ) : isEmpty ? (
                 <div className="empty-task-placeholder">
                     <p className="no-habit-text">You haven’t added any habits yet.</p>
@@ -95,7 +101,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                                         type="checkbox"
                                         checked={habit.completedToday}
                                         onChange={(e) => {
-                                            setCurrentHabit({
+                                            setSelectedHabit({
                                                 ...habit,
                                                 checked: e.target.checked,
                                             });
@@ -114,7 +120,11 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}
                 onConfirm={handleCheckboxChange}
-                message="Change this habit status?"
+                message={
+                    selectedHabit
+                        ? `Mark "${selectedHabit.title}" as ${selectedHabit.checked ? "completed" : "incomplete"}?`
+                        : ""
+                }
             />
         </div>
     );
