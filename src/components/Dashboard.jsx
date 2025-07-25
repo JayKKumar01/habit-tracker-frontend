@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../styles/Dashboard.css";
 import UserInfoCard from "./profile/UserInfoCard";
 import LogoutButton from "./authentication/LogoutButton";
-import TodayTaskList from "./dashboard/TodaysTaskList";
+import TodayTaskList from "./dashboard/TodayTaskList";
 import CurrentWeekIndicator from "./header/CurrentWeekIndicator";
 import AddHabitButton from "./dashboard/AddHabitButton";
 import { getUserHabits } from "../services/habitService";
