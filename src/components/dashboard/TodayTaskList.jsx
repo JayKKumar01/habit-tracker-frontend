@@ -17,7 +17,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     };
 
     useEffect(() => {
-        const loadTodaysHabits = async () => {
+        const loadTodayHabits = async () => {
             if (loading || habits.length === 0) return;
 
             setIsLogLoading(true);
@@ -52,7 +52,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
             setIsLogLoading(false);
         };
 
-        loadTodaysHabits();
+        loadTodayHabits();
     }, [habits, loading, email]);
 
     const handleCheckboxChange = async () => {
