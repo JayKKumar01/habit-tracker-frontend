@@ -68,11 +68,22 @@
     user-select: none;
 }
 
+.day-indicator.grey-na {
+    background-color: #e0e0e0;
+    color: transparent;
+    opacity: 0.7;
+    text-decoration: none;
+    pointer-events: none;
+    font-weight: normal;
+}
+
+
 /* Default greyed out */
 .day-indicator.grey {
     background-color: #e0e0e0;
     color: #555;
 }
+
 
 /* Completed – Green */
 .day-indicator.green {

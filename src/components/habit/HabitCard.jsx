@@ -3,8 +3,7 @@ import "../../styles/HabitCard.css";
 import { softDeleteHabit } from "../../services/habitService";
 import {
     getTodayISTDateStr,
-    getCurrentWeekISTDates,
-    getISTDate
+    getCurrentWeekISTDates
 } from "../../utils/dateUtils";
 import { getAllHabitLogs } from "../../services/habitLogService";
 import { Trash2 } from "lucide-react";
@@ -34,13 +33,15 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
             const todayStr = getTodayISTDateStr();
 
             const status = currentWeekDates.map((dateStr, idx) => {
-                const istDate = getISTDate();
 
 
                 if (dateStr === todayStr) setTodayIndex(idx);
 
                 // 🔸 If weekday not in targetDays, grey
-                if (!habit.targetDays.includes(daysLong[idx])) return "grey";
+                if (!habit.targetDays.includes(daysLong[idx])) return "grey-na";
+
+                // Check if date is in future
+                if (dateStr > todayStr) return "grey";
 
                 // 🔸 Check if there's a log for this date
                 const log = logs.find(log => log.date === dateStr);
