@@ -7,8 +7,8 @@ import CurrentWeekIndicator from "./header/CurrentWeekIndicator";
 import AddHabitButton from "./dashboard/AddHabitButton";
 import { getUserHabits } from "../services/habitService";
 import HabitOverviewGrid from "./habit/HabitOverviewGrid";
-import WeeklyProgressBar from "./habit_log/WeeklyProgressBar";
-import WeeklyLogCard from "./habit_log/WeeklyLogCard";
+import WeeklyProgressBar from "./habit/WeeklyProgressBar";
+import WeeklyLogCard from "./habit/WeeklyLogCard";
 import TokenExpiryWatcher from "../services/TokenExpiryWatcher";
 import { useNavigate } from "react-router-dom";
 
@@ -78,7 +78,7 @@ const Dashboard = ({ user }) => {
             </div>
 
             <div className="weekly-progress-section">
-                <WeeklyProgressBar habits={habits} />
+                <WeeklyProgressBar habits={habits} email={user.email}/>
             </div>
 
             <div className="weekly-logs-section">
