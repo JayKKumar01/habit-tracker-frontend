@@ -7,12 +7,16 @@ const TodaysTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const todayDay = getTodayISTDay();
     const todayDateStr = getTodayISTDateStr();
 
-    const todayHabits = habits.filter(
-        (habit) =>
+    const todayHabits = habits.filter((habit) => {
+        console.log("Checking Habit:", habit); // 👈 Log every habit before filtering
+
+        const isValid =
             habit.startDate <= todayDateStr &&
-            (!habit.endDate || habit.endDate >= todayDateStr) &&
-            (habit.frequency === "DAILY" || habit.targetDays?.includes(todayDay))
-    );
+            (!habit.endDate || habit.endDate > todayDateStr) &&
+            (habit.frequency === "DAILY" || habit.targetDays?.includes(todayDay));
+        return isValid;
+    });
+
 
 
     const isEmpty = !loading && todayHabits.length === 0;
@@ -32,6 +36,7 @@ const TodaysTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                 <div className="task-list-wrapper">
                     <ul className="task-list">
                         {todayHabits.map((habit) => (
+
                             <li
                                 key={habit.id}
                                 className={`task modern-task-item ${habit.completedToday ? "done" : "pending"}`}

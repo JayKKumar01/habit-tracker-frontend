@@ -10,7 +10,8 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
 
     const handleSoftDelete = async () => {
         try {
-            await softDeleteHabit(email, habit.id);
+            const today = getTodayISTDateStr();
+            await softDeleteHabit(email, habit.id, today);
             triggerRefresh();
             setModalOpen(false);
         } catch (error) {

@@ -29,11 +29,17 @@ export const createHabit = async (habitData, email) => {
     return data;
 };
 
-// ✅ Soft delete a habit by ID (sets endDate)
-export const softDeleteHabit = async (email, id) => {
-    const res = await fetch(`${HABIT_URL}/soft-delete/${email}/${id}`, {
-        method: "PATCH",
-        headers: getAuthHeaders(),
+export const softDeleteHabit = async (email, id, endDateStr) => {
+    const res = await fetch(`${HABIT_URL}/soft-delete/${email}`, {
+        method: "PUT",
+        headers: {
+            ...getAuthHeaders(),
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            id,
+            endDate: endDateStr, // format: "YYYY-MM-DD"
+        }),
     });
 
     const data = await res.json();
@@ -43,8 +49,9 @@ export const softDeleteHabit = async (email, id) => {
         throw new Error(errorMsg);
     }
 
-    return data; // returns { message: "Habit marked as ended." }
+    return data;
 };
+
 
 
 // ✅ Get all habits for a user
