@@ -3,9 +3,12 @@ import "../../styles/TodaysTaskList.css";
 import { getTodayISTDateStr, getTodayISTDay } from "../../utils/dateUtils";
 import AddHabitButton from "./AddHabitButton";
 import { updateHabitLog, getAllHabitLogs } from "../../services/habitLogService";
+import ConfirmModal from "../modals/ConfirmModal";
 
 const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [todayHabits, setTodayHabits] = useState([]);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [currentHabit, setCurrentHabit] = useState(null);
     const todayDay = getTodayISTDay();
     const todayDateStr = getTodayISTDateStr();
 
@@ -34,7 +37,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                         console.error(`❌ Failed to fetch logs for habit ${habit.id}:`, err.message);
                         return {
                             ...habit,
-                            completedToday: false, // fallback
+                            completedToday: false,
                         };
                     }
                 })
@@ -46,20 +49,23 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
         processHabits();
     }, [habits, loading, email]);
 
-    const handleCheckboxChange = async (habitId, checked) => {
-        console.log(`📦 Habit ID: ${habitId}, Checked: ${checked}`);
+    const handleCheckboxChange = async () => {
+        if (!currentHabit) return;
+        console.log(`📦 Habit ID: ${currentHabit.id}, Checked: ${currentHabit.checked}`);
 
         try {
             const response = await updateHabitLog(email, {
-                habitId: habitId,
+                habitId: currentHabit.id,
                 date: todayDateStr,
-                completed: checked,
+                completed: currentHabit.checked,
             });
 
             console.log("✅ Habit log updated:", response);
-            triggerRefresh();
+            triggerRefresh(); // Refresh the habits
         } catch (error) {
             console.error("❌ Failed to update habit log:", error.message);
+        } finally {
+            setModalOpen(false);
         }
     };
 
@@ -88,9 +94,13 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                                     <input
                                         type="checkbox"
                                         checked={habit.completedToday}
-                                        onChange={(e) =>
-                                            handleCheckboxChange(habit.id, e.target.checked)
-                                        }
+                                        onChange={(e) => {
+                                            setCurrentHabit({
+                                                ...habit,
+                                                checked: e.target.checked,
+                                            });
+                                            setModalOpen(true);
+                                        }}
                                     />
                                     <span className="task-title">{habit.title}</span>
                                 </label>
@@ -99,6 +109,13 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                     </ul>
                 </div>
             )}
+
+            <ConfirmModal
+                isOpen={isModalOpen}
+                onClose={() => setModalOpen(false)}
+                onConfirm={handleCheckboxChange}
+                message="Change this habit status?"
+            />
         </div>
     );
 };
