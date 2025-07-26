@@ -83,6 +83,7 @@ const WeeklyLogList = ({ habits = [], user }) => {
                     key={week.weekNumber}
                     weekNumber={week.weekNumber}
                     habits={week.habits}
+                    startDate={week.weekStartStr}
                     defaultOpen={week.weekNumber === weeklyHabitsList.length}
                 />
             ))}
