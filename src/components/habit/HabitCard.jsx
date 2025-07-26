@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
 import { softDeleteHabit } from "../../services/habitService";
-import {
-    getCurrentWeekDates
-} from "../../utils/dateUtils";
+import { getCurrentWeekDates } from "../../utils/dateUtils";
 import { getAllHabitLogs } from "../../services/habitLogService";
 import { Trash2 } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
 
 const daysShort = ["M", "T", "W", "T", "F", "S", "S"];
-// Used for comparison with habit.targetDays (uppercase like "MONDAY")
 const daysLong = [
     "MONDAY",
     "TUESDAY",
@@ -25,36 +22,50 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [weekStatus, setWeekStatus] = useState([]);
     const [todayIndex, setTodayIndex] = useState(null);
+    const [streak, setStreak] = useState(0);
 
     useEffect(() => {
         const fetchLogsAndSetStatus = async () => {
             const currentWeekDates = getCurrentWeekDates();
             const logs = await getAllHabitLogs(email, habit.id);
 
-            const status = currentWeekDates.map((dateStr, idx) => {
+            const status = [];
+            let todayIdx = null;
 
+            currentWeekDates.forEach((dateStr, idx) => {
+                if (dateStr === todayDateStr) todayIdx = idx;
 
-                if (dateStr === todayDateStr) setTodayIndex(idx);
-
-                // 🔸 If weekday not in targetDays, grey
-                if (!habit.targetDays.includes(daysLong[idx])) return "grey-na";
-
-                // Check if date is in future
-                if (dateStr > todayDateStr) return "grey";
-
-                // 🔸 Check if there's a log for this date
-                const log = logs.find(log => log.date === dateStr);
-
-                if (!log) return "red"; // target day but not completed
-
-                return log.completed ? "green" : "red";
+                if (!habit.targetDays.includes(daysLong[idx])) {
+                    status.push("grey-na");
+                } else if (dateStr > todayDateStr) {
+                    status.push("grey");
+                } else {
+                    const log = logs.find(log => log.date === dateStr);
+                    status.push(log ? (log.completed ? "green" : "red") : "red");
+                }
             });
 
             setWeekStatus(status);
+            setTodayIndex(todayIdx);
         };
 
         fetchLogsAndSetStatus();
     }, [habit, email]);
+
+    useEffect(() => {
+        if (todayIndex === null || weekStatus.length === 0) return;
+
+        let streakCount = 0;
+
+        for (let i = todayIndex; i >= 0; i--) {
+            const day = daysLong[i];
+            if (!habit.targetDays.includes(day)) continue;
+            if (weekStatus[i] !== "green") break;
+            streakCount++;
+        }
+
+        setStreak(streakCount);
+    }, [habit, todayIndex, weekStatus]);
 
     const handleSoftDelete = async () => {
         try {
@@ -79,6 +90,7 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
             )}
 
             <p><strong>Frequency:</strong> {habit.frequency}</p>
+            <p><strong>Streak:</strong> {streak} 🔥</p>
 
             <div className="weekly-tracker">
                 {daysShort.map((day, idx) => (

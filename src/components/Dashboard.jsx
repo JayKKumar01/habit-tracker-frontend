@@ -81,11 +81,11 @@ const Dashboard = ({ user }) => {
                 <WeeklyProgressBar habits={habits} email={user.email}/>
             </div>
 
-            {/*<div className="weekly-logs-section">*/}
-            {/*    <WeeklyLogCard weekNumber={3} habits={habits} defaultOpen={true} />*/}
-            {/*    <WeeklyLogCard weekNumber={2} habits={habits} defaultOpen={false} />*/}
-            {/*    <WeeklyLogCard weekNumber={1} habits={habits} defaultOpen={false} />*/}
-            {/*</div>*/}
+            <div className="weekly-logs-section">
+                <WeeklyLogCard weekNumber={3} habits={habits} defaultOpen={true} />
+                <WeeklyLogCard weekNumber={2} habits={habits} defaultOpen={false} />
+                <WeeklyLogCard weekNumber={1} habits={habits} defaultOpen={false} />
+            </div>
         </div>
     );
 };
