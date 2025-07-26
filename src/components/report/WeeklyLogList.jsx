@@ -41,41 +41,49 @@ const WeeklyLogList = ({ habits = [], loading, user }) => {
     const [weeklyHabitsList, setWeeklyHabitsList] = useState([]);
 
     useEffect(() => {
-        if (loading || habits.length === 0) return;
+        const fetchAndOrganize = async () => {
+            const createdAtLocal = new Date(user.createdAt);
+            const weeks = getWeeklyDateRanges(createdAtLocal);
 
-        const createdAtLocal = new Date(user.createdAt);
-        const weeks = getWeeklyDateRanges(createdAtLocal);
+            if (habits.length === 0) return;
 
-        const result = weeks.map((week, index) => {
-            const habitsForWeek = habits.filter(habit =>
-                isHabitActiveInWeek(habit, week.startDate, week.endDate)
-            );
-            return {
-                weekNumber: weeks.length - index,
-                habits: habitsForWeek,
-                weekStartStr: week.startDate,
-                weekEndStr: week.endDate
-            };
-        });
+            const result = weeks.map((week, index) => {
+                const habitsForWeek = habits.filter(habit =>
+                    isHabitActiveInWeek(habit, week.startDate, week.endDate)
+                );
+                return {
+                    weekNumber: weeks.length - index,
+                    habits: habitsForWeek,
+                    weekStartStr: week.startDate,
+                    weekEndStr: week.endDate
+                };
+            });
 
-        setWeeklyHabitsList(result);
-    }, [habits, loading]);
+            setWeeklyHabitsList(result);
+        };
 
-    if (loading) {
-        return <div className="weekly-logs-section">Loading weekly logs...</div>;
-    }
+        if (!loading) {
+            fetchAndOrganize();
+        }
+    }, [habits, user.email, loading]);
 
     return (
         <div className="weekly-logs-section">
-            {weeklyHabitsList.map((week) => (
-                <WeeklyLogCard
-                    key={week.weekNumber}
-                    weekNumber={week.weekNumber}
-                    habits={week.habits}
-                    startDate={week.weekStartStr}
-                    defaultOpen={week.weekNumber === weeklyHabitsList.length}
-                />
-            ))}
+            {loading ? (
+                <p className="weekly-logs-loading-text">Loading weekly logs...</p>
+            ) : weeklyHabitsList.length === 0 ? (
+                <p className="weekly-logs-empty-text">No habits found for any week.</p>
+            ) : (
+                weeklyHabitsList.map((week) => (
+                    <WeeklyLogCard
+                        key={week.weekNumber}
+                        weekNumber={week.weekNumber}
+                        habits={week.habits}
+                        startDate={week.weekStartStr}
+                        defaultOpen={week.weekNumber === weeklyHabitsList.length}
+                    />
+                ))
+            )}
         </div>
     );
 };

@@ -48,6 +48,23 @@ const Dashboard = ({ user }) => {
                     logs: logsByHabit[habit.id] || [],
                 }));
 
+                // const habitsWithLogs = habitsData.map(habit => {
+                //     habit.logs = [];
+                //     return habit;
+                // });
+                //
+                // const habitMap = {};
+                // habitsWithLogs.forEach(habit => {
+                //     habitMap[habit.id] = habit;
+                // });
+                //
+                // logsData.forEach(log => {
+                //     const habit = habitMap[log.habitId];
+                //     if (habit) {
+                //         habit.logs.push(log);
+                //     }
+                // });
+
                 setHabits(habitsWithLogs);
             } catch (err) {
                 console.error("❌ Failed to load habits or logs:", err.message);
