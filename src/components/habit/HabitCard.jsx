@@ -16,7 +16,7 @@ const daysLong = [
     "SUNDAY",
 ];
 
-const HabitCard = ({ habit, email, triggerRefresh }) => {
+const HabitCard = ({ habit, email, onUpdate }) => {
     const localDateStr = getLocalDateStr();
     const [isModalOpen, setModalOpen] = useState(false);
     const [weekStatus, setWeekStatus] = useState([]);
@@ -40,11 +40,6 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
                 } else {
                     const log = habit.logs?.find(log => log.date === dateStr);
                     status.push(log ? (log.completed ? "green" : "red") : "red");
-                    //const todayLog = habit.logs?.find(log => log.date === localDateStr);
-                    //             return {
-                    //                 ...habit,
-                    //                 completedToday: todayLog?.completed || false,
-                    //             };
                 }
             });
 
@@ -73,7 +68,7 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
     const handleSoftDelete = async () => {
         try {
             await softDeleteHabit(email, habit.id, localDateStr);
-            triggerRefresh();
+            onUpdate(habit.id, localDateStr);
             setModalOpen(false);
         } catch (error) {
             alert("Failed to delete habit: " + error.message);

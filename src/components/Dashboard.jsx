@@ -94,7 +94,7 @@ const Dashboard = ({ user }) => {
             </div>
 
             <div className="habit-overview-section">
-                <HabitOverviewGrid habits={habits} loading={loading} email={user.email} triggerRefresh={triggerRefresh} />
+                <HabitOverviewGrid habits={habits} loading={loading} email={user.email} setHabitsFromHabitOverview={setHabits} />
             </div>
 
             <div className="weekly-progress-section">

@@ -10,11 +10,7 @@ export const addHabitLocally = (currentHabits, newHabit) => {
     return [...currentHabits, { ...newHabit, logs: [] }];
 };
 
-/**
- * Revert habit list to original state if the add failed.
- * @param {Array} originalHabits - Previous stable list before add.
- * @returns {Array}
- */
-export const revertHabitAdd = (originalHabits) => {
-    return [...originalHabits];
-};
+export const updateHabitInList = (habits, habitId, updates) =>
+    habits.map(habit =>
+        habit.id === habitId ? { ...habit, ...updates } : habit
+    );
