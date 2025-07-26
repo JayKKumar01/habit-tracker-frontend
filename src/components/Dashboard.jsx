@@ -34,8 +34,6 @@ const Dashboard = ({ user }) => {
                     getAllLogsForUser(user.email),
                 ]);
 
-                console.log(logsData);
-
                 // Group logs by habitId
                 const logsByHabit = logsData.reduce((acc, log) => {
                     const habitId = log.habitId;
@@ -106,8 +104,8 @@ const Dashboard = ({ user }) => {
                 <WeeklyProgressBar habits={habits} loading={loading} email={user.email} />
             </div>
 
-            {/*/!* 📆 Weekly Logs *!/*/}
-            {/*<WeeklyLogList habits={habits} user={user} />*/}
+            {/* 📆 Weekly Logs */}
+            <WeeklyLogList habits={habits} loading={loading} user={user} />
         </div>
     );
 };

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/WeeklyLogList.css";
 import WeeklyLogCard from "../habit/WeeklyLogCard";
-import { getAllHabitLogs } from "../../services/habitLogService";
 import { toLocalYYYYMMDD } from "../../utils/dateUtils";
 
 // Get Monday of a given local date
@@ -38,43 +37,33 @@ const isHabitActiveInWeek = (habit, weekStart, weekEnd) => {
     return habit.startDate <= weekEnd && (!habit.endDate || habit.endDate >= weekStart);
 };
 
-const WeeklyLogList = ({ habits = [], user }) => {
+const WeeklyLogList = ({ habits = [], loading, user }) => {
     const [weeklyHabitsList, setWeeklyHabitsList] = useState([]);
 
     useEffect(() => {
-        const fetchAndOrganize = async () => {
-            const createdAtLocal = new Date(user.createdAt);
-            const weeks = getWeeklyDateRanges(createdAtLocal);
+        if (loading || habits.length === 0) return;
 
-            if (habits.length === 0) return;
+        const createdAtLocal = new Date(user.createdAt);
+        const weeks = getWeeklyDateRanges(createdAtLocal);
 
-            await Promise.all(
-                habits.map(async (habit) => {
-                    try {
-                        habit.logs = await getAllHabitLogs(user.email, habit.id);
-                    } catch {
-                        habit.logs = [];
-                    }
-                })
+        const result = weeks.map((week, index) => {
+            const habitsForWeek = habits.filter(habit =>
+                isHabitActiveInWeek(habit, week.startDate, week.endDate)
             );
+            return {
+                weekNumber: weeks.length - index,
+                habits: habitsForWeek,
+                weekStartStr: week.startDate,
+                weekEndStr: week.endDate
+            };
+        });
 
-            const result = weeks.map((week, index) => {
-                const habitsForWeek = habits.filter(habit =>
-                    isHabitActiveInWeek(habit, week.startDate, week.endDate)
-                );
-                return {
-                    weekNumber: weeks.length - index,
-                    habits: habitsForWeek,
-                    weekStartStr: week.startDate,
-                    weekEndStr: week.endDate
-                };
-            });
+        setWeeklyHabitsList(result);
+    }, [habits, loading]);
 
-            setWeeklyHabitsList(result);
-        };
-
-        fetchAndOrganize();
-    }, [habits, user.email]);
+    if (loading) {
+        return <div className="weekly-logs-section">Loading weekly logs...</div>;
+    }
 
     return (
         <div className="weekly-logs-section">
