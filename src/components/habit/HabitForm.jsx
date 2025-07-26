@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { createHabit } from "../../services/habitService";
-import { daysOfWeek } from "../../utils/dateUtils";
+import {daysOfWeek, getLocalDateStr,} from "../../utils/dateUtils";
 import "../../styles/HabitForm.css";
 
 const HabitForm = ({ email, onSuccess, onClose }) => {
-    const todayISOString = new Date().toISOString().slice(0, 10); // yyyy-mm-dd
+    const todayLocalStr = getLocalDateStr();
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [frequency, setFrequency] = useState("DAILY");
     const [targetDays, setTargetDays] = useState(new Set());
-    const [startDate, setStartDate] = useState(todayISOString);
+    const [startDate, setStartDate] = useState(todayLocalStr);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
         setDescription("");
         setFrequency("DAILY");
         setTargetDays(new Set());
-        setStartDate(todayISOString);
+        setStartDate(todayLocalStr);
         setError("");
         setLoading(false);
     };
@@ -55,10 +55,6 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
             return;
         }
 
-        const todayUTCDate = new Date(startDate).toISOString();
-
-        console.log(todayUTCDate);
-
         const payload = {
             title,
             description,
@@ -66,7 +62,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
             targetDays: frequency === "DAILY"
                 ? [...daysOfWeek]
                 : Array.from(targetDays),
-            startDate
+            startDate // already in local yyyy-mm-dd format
         };
 
         try {
@@ -140,7 +136,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        min={todayISOString}
+                        min={todayLocalStr}
                         required
                     />
 

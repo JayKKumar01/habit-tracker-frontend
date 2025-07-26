@@ -4,6 +4,7 @@ import "../../styles/TodaysTaskList.css";
 import AddHabitButton from "./AddHabitButton";
 import ConfirmModal from "../modals/ConfirmModal";
 import { updateHabitLog, getAllHabitLogs } from "../../services/habitLogService";
+import {getLocalDateStr, getTodayWeekDay} from "../../utils/dateUtils";
 
 const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [todayHabits, setTodayHabits] = useState([]);
@@ -12,10 +13,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [selectedHabit, setSelectedHabit] = useState(null);
 
     // Time constants
-    const now = new Date();
-    const todayMidnightUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    const todayIsoString = todayMidnightUTC.toISOString().slice(0,10); // Used for date comparison
-    const todayWeekday = now.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
+    const localDateStr = getLocalDateStr();
 
     useEffect(() => {
         const loadTodayHabits = async () => {
@@ -28,9 +26,9 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
             }
 
             const validHabits = habits.filter(habit => {
-                const isStartOk = new Date(habit.startDate) <= now;
-                const isEndOk = !habit.endDate || new Date(habit.endDate) > now;
-                const isFrequencyOk = habit.frequency === "DAILY" || habit.targetDays?.includes(todayWeekday);
+                const isStartOk = habit.startDate <= localDateStr;
+                const isEndOk = !habit.endDate || habit.endDate > localDateStr;
+                const isFrequencyOk = habit.frequency === "DAILY" || habit.targetDays?.includes(getTodayWeekDay);
 
                 return isStartOk && isEndOk && isFrequencyOk;
             });
@@ -39,8 +37,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                 validHabits.map(async (habit) => {
                     try {
                         const logs = await getAllHabitLogs(email, habit.id);
-                        console.log(logs);
-                        const todayLog = logs.find(log => log.date === todayIsoString);
+                        const todayLog = logs.find(log => log.date === localDateStr);
 
                         return {
                             ...habit,
@@ -75,7 +72,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
             const { id, checked } = selectedHabit;
             const response = await updateHabitLog(email, {
                 habitId: id,
-                date: todayIsoString,
+                date: localDateStr,
                 completed: checked,
             });
 

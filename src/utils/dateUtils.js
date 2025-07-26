@@ -1,38 +1,15 @@
-export function getUTCDateStr() {
-    const todayUtcMidnight = new Date();
-    todayUtcMidnight.setUTCHours(0, 0, 0, 0);
-    return todayUtcMidnight.toISOString(); // ✅ This is what you send
+// Util to get today's date as local yyyy-mm-dd string
+export const getLocalDateStr = (date = new Date()) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+};
+
+export const getTodayWeekDay = () => {
+    return new Date().toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
 }
 
-// ✅ Get a Date object adjusted to IST
-export const getISTDate = () => {
-    const now = new Date();
-    const istOffsetMs = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes
-    return new Date(now.getTime() + istOffsetMs);
-};
-
-// ✅ Get today in IST as 'YYYY-MM-DD'
-export const getTodayISTDateStr = () => {
-    const istDate = getISTDate();
-    return istDate.toISOString().split("T")[0];
-};
-
-// ✅ Convert Java Instant string to IST 'YYYY-MM-DD' string
-export const toISTDateStr = (instantStr) => {
-    const date = new Date(instantStr);
-    const istDate = new Date(date.getTime() + 5.5 * 60 * 60 * 1000);
-    return istDate.toISOString().split("T")[0]; // return as 'YYYY-MM-DD'
-};
-
-
-// ✅ Get today's day in IST as uppercase string: 'MONDAY', 'TUESDAY', ...
-export const getTodayISTDay = () => {
-    const istDate = getISTDate();
-    return istDate.toLocaleDateString("en-US", {
-        weekday: "long",
-        timeZone: "Asia/Kolkata",
-    }).toUpperCase();
-};
 // ✅ Get current week's dates (Monday to Sunday) based on IST
 export const getCurrentWeekDates = () => {
     const date = new Date(); // already adjusted to IST

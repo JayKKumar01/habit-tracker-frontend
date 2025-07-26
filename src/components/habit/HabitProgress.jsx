@@ -36,7 +36,7 @@ const HabitProgress = ({ habit, email }) => {
 
             const rate = applicableDays === 0 ? 0 : Math.round((completedDays / applicableDays) * 100);
 
-            console.log(`📊 ${title}: ${completedDays}/${applicableDays} completed (${rate}%)`);
+            // console.log(`📊 ${title}: ${completedDays}/${applicableDays} completed (${rate}%)`);
 
             setCompletionRate(rate);
         };

@@ -2,7 +2,6 @@
 import React from "react";
 import "../../styles/HabitOverviewGrid.css";
 import HabitCard from "./HabitCard";
-import { getTodayISTDateStr } from "../../utils/dateUtils";
 
 const HabitOverviewGrid = ({ habits, email, triggerRefresh }) => {
     // Time constants
