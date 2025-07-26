@@ -5,11 +5,13 @@ import AddHabitButton from "./AddHabitButton";
 import ConfirmModal from "../modals/ConfirmModal";
 import { updateHabitLog } from "../../services/habitLogService";
 import { getLocalDateStr, getTodayWeekDay } from "../../utils/dateUtils";
+import { updateLocalLog, revertLocalLog } from "../state/habitLogState";
 
-const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
+const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
     const [todayHabits, setTodayHabits] = useState([]);
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedHabit, setSelectedHabit] = useState(null);
+    const [originalHabits, setOriginalHabits] = useState([]);
 
     const localDateStr = getLocalDateStr();
 
@@ -39,24 +41,34 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
 
     const handleHabitCheck = (habit, checked) => {
         setSelectedHabit({ ...habit, checked });
+        setOriginalHabits(habits); // store current state for potential revert
         setModalOpen(true);
     };
 
     const handleCheckboxChange = async () => {
         if (!selectedHabit) return;
 
+        const { id, checked } = selectedHabit;
+
+        // 👁 Optimistically update the local UI
+        const updatedHabits = updateLocalLog(habits, id, checked);
+        setHabitsFromChild(updatedHabits);
+
         try {
-            const { id, checked } = selectedHabit;
-            const response = await updateHabitLog(email, {
+            // ✅ Send to server
+            await updateHabitLog(email, {
                 habitId: id,
                 date: localDateStr,
                 completed: checked,
             });
 
-            console.log(`✅ Updated "${selectedHabit.title}" to ${checked ? "completed" : "incomplete"}`, response);
-            triggerRefresh();
+            console.log(`✅ Synced "${selectedHabit.title}" as ${checked ? "completed" : "incomplete"}`);
         } catch (err) {
-            console.error("❌ Failed to update habit log:", err.message);
+            console.error("❌ API call failed. Reverting UI:", err.message);
+
+            // 🔁 Revert the local update
+            const revertedHabits = revertLocalLog(originalHabits, id);
+            setHabitsFromChild(revertedHabits);
         } finally {
             setModalOpen(false);
         }
@@ -73,7 +85,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
             ) : isEmpty ? (
                 <div className="empty-task-placeholder">
                     <p className="no-habit-text">You haven’t added any habits yet.</p>
-                    <AddHabitButton email={email} onHabitCreated={triggerRefresh} />
+                    <AddHabitButton email={email} onHabitCreated={() => {}} />
                 </div>
             ) : (
                 <div className="task-list-wrapper">

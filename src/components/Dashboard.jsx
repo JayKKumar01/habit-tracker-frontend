@@ -24,7 +24,6 @@ const Dashboard = ({ user }) => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
-    // ✅ Fetch habits + logs
     useEffect(() => {
         const fetchHabitsAndLogs = async () => {
             setLoading(true);
@@ -34,36 +33,16 @@ const Dashboard = ({ user }) => {
                     getAllLogsForUser(user.email),
                 ]);
 
-                // Group logs by habitId
                 const logsByHabit = logsData.reduce((acc, log) => {
-                    const habitId = log.habitId;
-                    if (!acc[habitId]) acc[habitId] = [];
-                    acc[habitId].push(log);
+                    if (!acc[log.habitId]) acc[log.habitId] = [];
+                    acc[log.habitId].push(log);
                     return acc;
                 }, {});
 
-                // Attach logs to each habit
                 const habitsWithLogs = habitsData.map(habit => ({
                     ...habit,
                     logs: logsByHabit[habit.id] || [],
                 }));
-
-                // const habitsWithLogs = habitsData.map(habit => {
-                //     habit.logs = [];
-                //     return habit;
-                // });
-                //
-                // const habitMap = {};
-                // habitsWithLogs.forEach(habit => {
-                //     habitMap[habit.id] = habit;
-                // });
-                //
-                // logsData.forEach(log => {
-                //     const habit = habitMap[log.habitId];
-                //     if (habit) {
-                //         habit.logs.push(log);
-                //     }
-                // });
 
                 setHabits(habitsWithLogs);
             } catch (err) {
@@ -77,12 +56,10 @@ const Dashboard = ({ user }) => {
         fetchHabitsAndLogs();
     }, [user.email, refreshKey]);
 
-    // ✅ Trigger refresh by changing key
     const triggerRefresh = () => setRefreshKey(prev => prev + 1);
 
     return (
         <div className="dashboard-wrapper">
-            {/* ✅ Auto logout on token expiry */}
             <TokenExpiryWatcher
                 token={token}
                 onExpire={() => {
@@ -91,37 +68,35 @@ const Dashboard = ({ user }) => {
                 }}
             />
 
-            {/* 🔰 Header Row */}
             <div className="dashboard-title-row">
                 <h1 className="app-title">Habit Tracker</h1>
                 <LogoutButton />
             </div>
 
-            {/* 👋 Welcome Row */}
             <div className="dashboard-header-row">
                 <h1 className="welcome-text">🎯 Welcome, {user.name}</h1>
                 <CurrentWeekIndicator user={user} />
                 <AddHabitButton email={user.email} onHabitCreated={triggerRefresh} />
             </div>
 
-            {/* 📋 Today’s Task + User Info */}
             <div className="dashboard-row">
                 <UserInfoCard user={user} />
-                <TodayTaskList habits={habits} loading={loading} email={user.email} triggerRefresh={triggerRefresh}
+                <TodayTaskList
+                    habits={habits}
+                    loading={loading}
+                    email={user.email}
+                    setHabitsFromChild={setHabits}
                 />
             </div>
 
-            {/* 📊 Habit Overview */}
             <div className="habit-overview-section">
                 <HabitOverviewGrid habits={habits} loading={loading} email={user.email} triggerRefresh={triggerRefresh} />
             </div>
 
-            {/* 📈 Weekly Progress */}
             <div className="weekly-progress-section">
                 <WeeklyProgressBar habits={habits} loading={loading} email={user.email} />
             </div>
 
-            {/* 📆 Weekly Logs */}
             <WeeklyLogList habits={habits} loading={loading} user={user} />
         </div>
     );

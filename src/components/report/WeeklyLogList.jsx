@@ -36,9 +36,6 @@ const WeeklyLogList = ({ habits = [], loading, user }) => {
         const fetchAndOrganize = async () => {
             const createdAtLocal = new Date(user.createdAt);
             const weeks = getWeeklyDateRanges(createdAtLocal);
-            for (const week of weeks) {
-                console.log("week", week);
-            }
 
             if (habits.length === 0) return;
 
