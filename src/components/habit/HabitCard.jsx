@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
 import { softDeleteHabit } from "../../services/habitService";
-import { getCurrentWeekDates } from "../../utils/dateUtils";
+import {getCurrentWeekDates, getLocalDateStr} from "../../utils/dateUtils";
 import { getAllHabitLogs } from "../../services/habitLogService";
 import { Trash2 } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
@@ -18,7 +18,7 @@ const daysLong = [
 ];
 
 const HabitCard = ({ habit, email, triggerRefresh }) => {
-    const todayDateStr = new Date().toISOString().slice(0, 10);
+    const localDateStr = getLocalDateStr();
     const [isModalOpen, setModalOpen] = useState(false);
     const [weekStatus, setWeekStatus] = useState([]);
     const [todayIndex, setTodayIndex] = useState(null);
@@ -33,11 +33,11 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
             let todayIdx = null;
 
             currentWeekDates.forEach((dateStr, idx) => {
-                if (dateStr === todayDateStr) todayIdx = idx;
+                if (dateStr === localDateStr) todayIdx = idx;
 
                 if (!habit.targetDays.includes(daysLong[idx])) {
                     status.push("grey-na");
-                } else if (dateStr > todayDateStr) {
+                } else if (dateStr > localDateStr) {
                     status.push("grey");
                 } else {
                     const log = logs.find(log => log.date === dateStr);
@@ -69,7 +69,7 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
 
     const handleSoftDelete = async () => {
         try {
-            await softDeleteHabit(email, habit.id, todayDateStr);
+            await softDeleteHabit(email, habit.id, localDateStr);
             triggerRefresh();
             setModalOpen(false);
         } catch (error) {

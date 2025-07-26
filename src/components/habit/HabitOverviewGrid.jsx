@@ -2,13 +2,15 @@
 import React from "react";
 import "../../styles/HabitOverviewGrid.css";
 import HabitCard from "./HabitCard";
+import {getLocalDateStr} from "../../utils/dateUtils";
 
 const HabitOverviewGrid = ({ habits, email, triggerRefresh }) => {
+
     // Time constants
-    const now = new Date();
+    const localDateStr = getLocalDateStr();
 
     const activeHabits = habits.filter(
-        (habit) => !habit.endDate || new Date(habit.endDate) > now
+        (habit) => !habit.endDate || habit.endDate > localDateStr
     );
 
     return (

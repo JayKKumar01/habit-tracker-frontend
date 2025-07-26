@@ -4,13 +4,13 @@ import {daysOfWeek, getLocalDateStr,} from "../../utils/dateUtils";
 import "../../styles/HabitForm.css";
 
 const HabitForm = ({ email, onSuccess, onClose }) => {
-    const todayLocalStr = getLocalDateStr();
+    const localDateStr = getLocalDateStr();
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [frequency, setFrequency] = useState("DAILY");
     const [targetDays, setTargetDays] = useState(new Set());
-    const [startDate, setStartDate] = useState(todayLocalStr);
+    const [startDate, setStartDate] = useState(localDateStr);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
         setDescription("");
         setFrequency("DAILY");
         setTargetDays(new Set());
-        setStartDate(todayLocalStr);
+        setStartDate(localDateStr);
         setError("");
         setLoading(false);
     };
@@ -136,7 +136,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        min={todayLocalStr}
+                        min={localDateStr}
                         required
                     />
 
