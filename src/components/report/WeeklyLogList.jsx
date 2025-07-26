@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/WeeklyLogList.css";
 import WeeklyLogCard from "../habit/WeeklyLogCard";
-import { toLocalYYYYMMDD } from "../../utils/dateUtils";
-
-// Get Monday of a given local date
-const getMondayOfLocalDate = (localDate) => {
-    const day = localDate.getDay();
-    const diff = (day + 6) % 7;
-    const monday = new Date(localDate);
-    monday.setDate(localDate.getDate() - diff);
-    return monday;
-};
+import {getMonday, toLocalYYYYMMDD} from "../../utils/dateUtils";
 
 // Get weekly ranges from start to today (Monday to Sunday)
 const getWeeklyDateRanges = (startDateLocal) => {
     const weeks = [];
-    let current = getMondayOfLocalDate(startDateLocal);
-    const todayMonday = getMondayOfLocalDate(new Date());
+    let current = getMonday(startDateLocal);
+    const now = new Date();
+    const todayMonday = getMonday(now);
 
     while (current <= todayMonday) {
         const weekStart = new Date(current);
@@ -44,6 +36,9 @@ const WeeklyLogList = ({ habits = [], loading, user }) => {
         const fetchAndOrganize = async () => {
             const createdAtLocal = new Date(user.createdAt);
             const weeks = getWeeklyDateRanges(createdAtLocal);
+            for (const week of weeks) {
+                console.log("week", week);
+            }
 
             if (habits.length === 0) return;
 

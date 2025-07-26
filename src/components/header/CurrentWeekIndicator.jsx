@@ -1,19 +1,11 @@
 import React from "react";
 import "../../styles/CurrentWeekIndicator.css";
+import {getMonday} from "../../utils/dateUtils";
 
 const CurrentWeekIndicator = ({ user }) => {
     const getWeekAndDay = () => {
         const createdDate = new Date(user.createdAt);
         const now = new Date();
-
-        const getMonday = (date) => {
-            const result = new Date(date);
-            const day = result.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
-            const diff = (day === 0 ? -6 : 1) - day; // Shift so Monday is the start
-            result.setDate(result.getDate() + diff);
-            result.setHours(0, 0, 0, 0);
-            return result;
-        };
 
         const createdMonday = getMonday(createdDate);
         const todayMonday = getMonday(now);

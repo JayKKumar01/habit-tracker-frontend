@@ -13,6 +13,15 @@ export const toLocalYYYYMMDD = (date) => {
     return `${year}-${month}-${day}`;
 };
 
+export const getMonday = (date) => {
+    const result = new Date(date);
+    const day = result.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+    const diff = (day === 0 ? -6 : 1) - day; // Shift so Monday is the start
+    result.setDate(result.getDate() + diff);
+    result.setHours(0, 0, 0, 0);
+    return result;
+};
+
 
 export const getTodayWeekDay = () => {
     return new Date().toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
