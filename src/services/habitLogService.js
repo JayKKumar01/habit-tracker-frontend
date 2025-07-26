@@ -46,3 +46,21 @@ export const getAllHabitLogs = async (email, habitId) => {
     return data; // This will be an array of HabitLogResponse
 };
 
+// ✅ Get all logs for a user (used to batch fetch logs for all habits)
+export const getAllLogsForUser = async (email) => {
+    const res = await fetch(`${HABIT_LOG_URL}/all/${email}`, {
+        method: "GET",
+        headers: getAuthHeaders(),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        const errorMsg = data.error || data.message || "Failed to fetch user logs.";
+        throw new Error(errorMsg);
+    }
+
+    return data; // Array of HabitLogResponse for all habits
+};
+
+

@@ -3,8 +3,8 @@ import "../../styles/TodaysTaskList.css";
 
 import AddHabitButton from "./AddHabitButton";
 import ConfirmModal from "../modals/ConfirmModal";
-import { updateHabitLog, getAllHabitLogs } from "../../services/habitLogService";
-import {getLocalDateStr, getTodayWeekDay} from "../../utils/dateUtils";
+import { updateHabitLog } from "../../services/habitLogService";
+import { getLocalDateStr, getTodayWeekDay } from "../../utils/dateUtils";
 
 const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [todayHabits, setTodayHabits] = useState([]);
@@ -12,53 +12,36 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedHabit, setSelectedHabit] = useState(null);
 
-    // Time constants
     const localDateStr = getLocalDateStr();
 
     useEffect(() => {
-        const loadTodayHabits = async () => {
-            setIsLogLoading(true);
+        setIsLogLoading(true);
 
-            if (loading || habits.length === 0) {
-                setTodayHabits([]);
-                setIsLogLoading(false);
-                return;
-            }
-
-            const validHabits = habits.filter(habit => {
-                const isStartOk = habit.startDate <= localDateStr;
-                const isEndOk = !habit.endDate || habit.endDate > localDateStr;
-                const isFrequencyOk = habit.frequency === "DAILY" || habit.targetDays?.includes(getTodayWeekDay());
-
-                return isStartOk && isEndOk && isFrequencyOk;
-            });
-
-            const enrichedHabits = await Promise.all(
-                validHabits.map(async (habit) => {
-                    try {
-                        const logs = await getAllHabitLogs(email, habit.id);
-                        const todayLog = logs.find(log => log.date === localDateStr);
-
-                        return {
-                            ...habit,
-                            completedToday: todayLog?.completed || false,
-                        };
-                    } catch (err) {
-                        console.error(`❌ Error fetching logs for ${habit.title}:`, err.message);
-                        return {
-                            ...habit,
-                            completedToday: false,
-                        };
-                    }
-                })
-            );
-
-            setTodayHabits(enrichedHabits);
+        if (loading || habits.length === 0) {
+            setTodayHabits([]);
             setIsLogLoading(false);
-        };
+            return;
+        }
 
-        loadTodayHabits();
-    }, [habits, loading, email]);
+        const filteredHabits = habits.filter(habit => {
+            const isStartOk = habit.startDate <= localDateStr;
+            const isEndOk = !habit.endDate || habit.endDate > localDateStr;
+            const isFrequencyOk = habit.frequency === "DAILY" || habit.targetDays?.includes(getTodayWeekDay());
+            return isStartOk && isEndOk && isFrequencyOk;
+        });
+
+        const enrichedHabits = filteredHabits.map(habit => {
+            console.log(habit.logs);
+            const todayLog = habit.logs?.find(log => log.date === localDateStr);
+            return {
+                ...habit,
+                completedToday: todayLog?.completed || false,
+            };
+        });
+
+        setTodayHabits(enrichedHabits);
+        setIsLogLoading(false);
+    }, [habits, loading]);
 
     const handleHabitCheck = (habit, checked) => {
         setSelectedHabit({ ...habit, checked });
