@@ -5,10 +5,11 @@ import HabitCard from "./HabitCard";
 import { getTodayISTDateStr } from "../../utils/dateUtils";
 
 const HabitOverviewGrid = ({ habits, email, triggerRefresh }) => {
-    const today = getTodayISTDateStr();
+    // Time constants
+    const now = new Date();
 
     const activeHabits = habits.filter(
-        (habit) => !habit.endDate || habit.endDate > today
+        (habit) => !habit.endDate || new Date(habit.endDate) > now
     );
 
     return (

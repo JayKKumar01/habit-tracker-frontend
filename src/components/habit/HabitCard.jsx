@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
 import { softDeleteHabit } from "../../services/habitService";
 import {
-    getTodayISTDateStr,
     getCurrentWeekISTDates
 } from "../../utils/dateUtils";
 import { getAllHabitLogs } from "../../services/habitLogService";
@@ -22,6 +21,7 @@ const daysLong = [
 ];
 
 const HabitCard = ({ habit, email, triggerRefresh }) => {
+    const todayDateStr = new Date().toISOString().slice(0, 10);
     const [isModalOpen, setModalOpen] = useState(false);
     const [weekStatus, setWeekStatus] = useState([]);
     const [todayIndex, setTodayIndex] = useState(null);
@@ -30,18 +30,17 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
         const fetchLogsAndSetStatus = async () => {
             const currentWeekDates = getCurrentWeekISTDates();
             const logs = await getAllHabitLogs(email, habit.id);
-            const todayStr = getTodayISTDateStr();
 
             const status = currentWeekDates.map((dateStr, idx) => {
 
 
-                if (dateStr === todayStr) setTodayIndex(idx);
+                if (dateStr === todayDateStr) setTodayIndex(idx);
 
                 // 🔸 If weekday not in targetDays, grey
                 if (!habit.targetDays.includes(daysLong[idx])) return "grey-na";
 
                 // Check if date is in future
-                if (dateStr > todayStr) return "grey";
+                if (dateStr > todayDateStr) return "grey";
 
                 // 🔸 Check if there's a log for this date
                 const log = logs.find(log => log.date === dateStr);
@@ -59,8 +58,7 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
 
     const handleSoftDelete = async () => {
         try {
-            const today = getTodayISTDateStr();
-            await softDeleteHabit(email, habit.id, today);
+            await softDeleteHabit(email, habit.id, todayDateStr);
             triggerRefresh();
             setModalOpen(false);
         } catch (error) {

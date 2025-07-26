@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/TodaysTaskList.css";
-import { getTodayISTDateStr, getTodayISTDay } from "../../utils/dateUtils";
+
 import AddHabitButton from "./AddHabitButton";
-import { updateHabitLog, getAllHabitLogs } from "../../services/habitLogService";
 import ConfirmModal from "../modals/ConfirmModal";
+import { updateHabitLog, getAllHabitLogs } from "../../services/habitLogService";
 
 const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [todayHabits, setTodayHabits] = useState([]);
@@ -11,28 +11,36 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedHabit, setSelectedHabit] = useState(null);
 
-    const today = {
-        day: getTodayISTDay(),
-        dateStr: getTodayISTDateStr(),
-    };
+    // Time constants
+    const now = new Date();
+    const todayMidnightUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const todayIsoString = todayMidnightUTC.toISOString().slice(0,10); // Used for date comparison
+    const todayWeekday = now.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
 
     useEffect(() => {
         const loadTodayHabits = async () => {
-            if (loading || habits.length === 0) return;
-
             setIsLogLoading(true);
 
-            const validHabits = habits.filter(habit =>
-                habit.startDate <= today.dateStr &&
-                (!habit.endDate || habit.endDate > today.dateStr) &&
-                (habit.frequency === "DAILY" || habit.targetDays?.includes(today.day))
-            );
+            if (loading || habits.length === 0) {
+                setTodayHabits([]);
+                setIsLogLoading(false);
+                return;
+            }
+
+            const validHabits = habits.filter(habit => {
+                const isStartOk = new Date(habit.startDate) <= now;
+                const isEndOk = !habit.endDate || new Date(habit.endDate) > now;
+                const isFrequencyOk = habit.frequency === "DAILY" || habit.targetDays?.includes(todayWeekday);
+
+                return isStartOk && isEndOk && isFrequencyOk;
+            });
 
             const enrichedHabits = await Promise.all(
-                validHabits.map(async habit => {
+                validHabits.map(async (habit) => {
                     try {
                         const logs = await getAllHabitLogs(email, habit.id);
-                        const todayLog = logs.find(log => log.date === today.dateStr);
+                        console.log(logs);
+                        const todayLog = logs.find(log => log.date === todayIsoString);
 
                         return {
                             ...habit,
@@ -55,6 +63,11 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
         loadTodayHabits();
     }, [habits, loading, email]);
 
+    const handleHabitCheck = (habit, checked) => {
+        setSelectedHabit({ ...habit, checked });
+        setModalOpen(true);
+    };
+
     const handleCheckboxChange = async () => {
         if (!selectedHabit) return;
 
@@ -62,7 +75,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
             const { id, checked } = selectedHabit;
             const response = await updateHabitLog(email, {
                 habitId: id,
-                date: today.dateStr,
+                date: todayIsoString,
                 completed: checked,
             });
 
@@ -91,7 +104,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
             ) : (
                 <div className="task-list-wrapper">
                     <ul className="task-list">
-                        {todayHabits.map((habit) => (
+                        {todayHabits.map(habit => (
                             <li
                                 key={habit.id}
                                 className={`task modern-task-item ${habit.completedToday ? "done" : "pending"}`}
@@ -100,13 +113,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
                                     <input
                                         type="checkbox"
                                         checked={habit.completedToday}
-                                        onChange={(e) => {
-                                            setSelectedHabit({
-                                                ...habit,
-                                                checked: e.target.checked,
-                                            });
-                                            setModalOpen(true);
-                                        }}
+                                        onChange={(e) => handleHabitCheck(habit, e.target.checked)}
                                     />
                                     <span className="task-title">{habit.title}</span>
                                 </label>

@@ -1,26 +1,35 @@
 import React, { useState } from "react";
 import { createHabit } from "../../services/habitService";
-import {
-    getTodayISTDateStr,
-    daysOfWeek,
-} from "../../utils/dateUtils";
+import { daysOfWeek } from "../../utils/dateUtils";
 import "../../styles/HabitForm.css";
 
 const HabitForm = ({ email, onSuccess, onClose }) => {
-    const todayStr = getTodayISTDateStr();
+    const todayISOString = new Date().toISOString().slice(0, 10); // yyyy-mm-dd
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [frequency, setFrequency] = useState("DAILY");
     const [targetDays, setTargetDays] = useState(new Set());
-    const [startDate, setStartDate] = useState(todayStr);
+    const [startDate, setStartDate] = useState(todayISOString);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const resetForm = () => {
+        setTitle("");
+        setDescription("");
+        setFrequency("DAILY");
+        setTargetDays(new Set());
+        setStartDate(todayISOString);
+        setError("");
+        setLoading(false);
+    };
+
     const toggleDay = (day) => {
-        const updated = new Set(targetDays);
-        updated.has(day) ? updated.delete(day) : updated.add(day);
-        setTargetDays(updated);
+        setTargetDays((prev) => {
+            const updated = new Set(prev);
+            updated.has(day) ? updated.delete(day) : updated.add(day);
+            return updated;
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -40,31 +49,33 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
             return;
         }
 
-        if (frequency === "WEEKLY") {
-            if (targetDays.size === 0) {
-                setError("Please select at least one target day for weekly habit.");
-                setLoading(false);
-                return;
-            }
+        if (frequency === "WEEKLY" && targetDays.size === 0) {
+            setError("Please select at least one target day for weekly habit.");
+            setLoading(false);
+            return;
         }
+
+        const todayUTCDate = new Date(startDate).toISOString();
+
+        console.log(todayUTCDate);
 
         const payload = {
             title,
             description,
             frequency,
-            startDate,
-            targetDays:
-                frequency === "DAILY"
-                    ? [...daysOfWeek]
-                    : Array.from(targetDays),
+            targetDays: frequency === "DAILY"
+                ? [...daysOfWeek]
+                : Array.from(targetDays),
+            startDate
         };
 
         try {
             const createdHabit = await createHabit(payload, email);
             onSuccess(createdHabit);
             onClose();
+            resetForm();
         } catch (err) {
-            setError(err.message);
+            setError(err.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }
@@ -74,7 +85,9 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
         <div className="habit-form-backdrop">
             <div className="habit-form-modal">
                 <h3>Create New Habit</h3>
+
                 {error && <p className="error">{error}</p>}
+
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
@@ -83,6 +96,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                         onChange={(e) => setTitle(e.target.value)}
                         required
                     />
+
                     <textarea
                         placeholder="Description"
                         value={description}
@@ -90,6 +104,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                         rows={3}
                         required
                     />
+
                     <label>Frequency</label>
                     <select
                         value={frequency}
@@ -108,8 +123,8 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                             <div className="day-buttons">
                                 {daysOfWeek.map((day) => (
                                     <button
-                                        type="button"
                                         key={day}
+                                        type="button"
                                         className={targetDays.has(day) ? "selected" : ""}
                                         onClick={() => toggleDay(day)}
                                     >
@@ -125,7 +140,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        min={todayStr}
+                        min={todayISOString}
                         required
                     />
 
