@@ -2,7 +2,6 @@ import React from "react";
 import "../../styles/HabitOverviewGrid.css";
 import HabitCard from "./HabitCard";
 import { getLocalDateStr } from "../../utils/dateUtils";
-import {updateHabitInList} from "../state/habitState";
 
 const HabitOverviewGrid = ({ habits, loading, email, setHabitsFromHabitOverview }) => {
     const localDateStr = getLocalDateStr();
@@ -20,10 +19,6 @@ const HabitOverviewGrid = ({ habits, loading, email, setHabitsFromHabitOverview 
         (habit) => !habit.endDate || habit.endDate > localDateStr
     );
 
-    function updateHabit(id, endDate) {
-        setHabitsFromHabitOverview(prev => updateHabitInList(prev, id, { endDate }));
-    }
-
 
     return (
         <div className="habit-overview-container">
@@ -35,7 +30,7 @@ const HabitOverviewGrid = ({ habits, loading, email, setHabitsFromHabitOverview 
                             key={habit.id}
                             habit={habit}
                             email={email}
-                            onUpdate={updateHabit}
+                            setHabitsFromHabitCard={setHabitsFromHabitOverview}
                         />
                     ))
                 ) : (

@@ -4,6 +4,7 @@ import { softDeleteHabit } from "../../services/habitService";
 import {getCurrentWeekDates, getLocalDateStr} from "../../utils/dateUtils";
 import { Trash2 } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
+import {updateHabitInList} from "../state/habitState";
 
 const daysShort = ["M", "T", "W", "T", "F", "S", "S"];
 const daysLong = [
@@ -16,7 +17,7 @@ const daysLong = [
     "SUNDAY",
 ];
 
-const HabitCard = ({ habit, email, onUpdate }) => {
+const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
     const localDateStr = getLocalDateStr();
     const [isModalOpen, setModalOpen] = useState(false);
     const [weekStatus, setWeekStatus] = useState([]);
@@ -68,7 +69,7 @@ const HabitCard = ({ habit, email, onUpdate }) => {
     const handleSoftDelete = async () => {
         try {
             await softDeleteHabit(email, habit.id, localDateStr);
-            onUpdate(habit.id, localDateStr);
+            setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, {endDate: localDateStr}));
             setModalOpen(false);
         } catch (error) {
             alert("Failed to delete habit: " + error.message);

@@ -11,7 +11,6 @@ const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
     const [todayHabits, setTodayHabits] = useState([]);
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedHabit, setSelectedHabit] = useState(null);
-    const [originalHabits, setOriginalHabits] = useState([]);
 
     const localDateStr = getLocalDateStr();
 
@@ -41,7 +40,6 @@ const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
 
     const handleHabitCheck = (habit, checked) => {
         setSelectedHabit({ ...habit, checked });
-        setOriginalHabits(habits); // store current state for potential revert
         setModalOpen(true);
     };
 
@@ -50,10 +48,6 @@ const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
 
         const { id, checked } = selectedHabit;
 
-        // 👁 Optimistically update the local UI
-        const updatedHabits = updateLocalLog(habits, id, checked);
-        setHabitsFromChild(updatedHabits);
-
         try {
             // ✅ Send to server
             await updateHabitLog(email, {
@@ -61,14 +55,12 @@ const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
                 date: localDateStr,
                 completed: checked,
             });
-
+            // 👁 Optimistically update the local UI
+            const updatedHabits = updateLocalLog(habits, id, checked);
+            setHabitsFromChild(updatedHabits);
             console.log(`✅ Synced "${selectedHabit.title}" as ${checked ? "completed" : "incomplete"}`);
         } catch (err) {
             console.error("❌ API call failed. Reverting UI:", err.message);
-
-            // 🔁 Revert the local update
-            const revertedHabits = revertLocalLog(originalHabits, id);
-            setHabitsFromChild(revertedHabits);
         } finally {
             setModalOpen(false);
         }

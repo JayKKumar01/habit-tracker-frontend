@@ -43,11 +43,24 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
             return;
         }
 
+        if (title.length > 20) {
+            setError("Title can't be too long");
+            setLoading(false);
+            return;
+        }
+
         if (!description.trim()) {
             setError("Description is required.");
             setLoading(false);
             return;
         }
+
+        if (description.length > 100) {
+            setError("That description is a bit too long.");
+            setLoading(false);
+            return;
+        }
+
 
         if (frequency === "WEEKLY" && targetDays.size === 0) {
             setError("Please select at least one target day for weekly habit.");
