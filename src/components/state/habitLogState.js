@@ -14,45 +14,33 @@ export const updateLocalLog = (habits, habitId, completed) => {
     return habits.map(habit => {
         if (habit.id !== habitId) return habit;
 
-        const existingLogIndex = habit.logs?.findIndex(log => log.date === today);
+        const logs = habit.logs || [];
+        const index = logs.findIndex(log => log.date === today);
+        const updatedLogs = [...logs];
 
-        const updatedLogs = habit.logs ? [...habit.logs] : [];
-
-        if (existingLogIndex !== -1) {
-            // Update existing log
-            updatedLogs[existingLogIndex] = {
-                ...updatedLogs[existingLogIndex],
-                completed,
-            };
+        if (index !== -1) {
+            updatedLogs[index] = { ...updatedLogs[index], completed };
         } else {
-            // Add new log
-            updatedLogs.push({
-                habitId,
-                date: today,
-                completed,
-            });
+            updatedLogs.push({ habitId, date: today, completed });
         }
 
-        return {
-            ...habit,
-            logs: updatedLogs,
-        };
+        return { ...habit, logs: updatedLogs };
     });
 };
 
-// 🔁 Revert changes on failure
+/**
+ * Revert the habit log for today in case of failure
+ * @param {Array} habits - Original habit list
+ * @param {string} habitId - ID of the habit to revert
+ * @returns {Array} - Updated habits array with today's log removed
+ */
 export const revertLocalLog = (habits, habitId) => {
     const today = getLocalDateStr();
 
     return habits.map(habit => {
         if (habit.id !== habitId) return habit;
 
-        const updatedLogs = habit.logs?.filter(log => log.date !== today) || [];
-
-        return {
-            ...habit,
-            logs: updatedLogs,
-        };
+        const updatedLogs = (habit.logs || []).filter(log => log.date !== today);
+        return { ...habit, logs: updatedLogs };
     });
 };
-

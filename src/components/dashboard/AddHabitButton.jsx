@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import "../../styles/AddHabitButton.css";
 import HabitForm from "../habit/HabitForm";
 
-const AddHabitButton = ({ email, onHabitCreated }) => {
+const AddHabitButton = ({ email, setHabitsFromAddHabit }) => {
     const [open, setOpen] = useState(false);
 
-    const handleCreated = (habit) => {
-        console.log("New habit created:", habit);
-        onHabitCreated?.(); // Notify parent
+    const handleCreated = (newHabit) => {
+        console.log("New habit created:", newHabit);
+
+        // ✅ Locally add new habit to habit list in Dashboard
+        setHabitsFromAddHabit(prev => [...prev, newHabit]);
+
         setOpen(false);
     };
 

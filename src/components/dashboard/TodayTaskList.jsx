@@ -85,7 +85,7 @@ const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
             ) : isEmpty ? (
                 <div className="empty-task-placeholder">
                     <p className="no-habit-text">You haven’t added any habits yet.</p>
-                    <AddHabitButton email={email} onHabitCreated={() => {}} />
+                    <AddHabitButton email={email} setHabitsFromAddHabit={setHabitsFromChild} />
                 </div>
             ) : (
                 <div className="task-list-wrapper">

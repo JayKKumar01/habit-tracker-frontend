@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitProgress.css";
 import { getCurrentWeekDates } from "../../utils/dateUtils";
-import { getAllHabitLogs } from "../../services/habitLogService";
 
 const HabitProgress = ({ habit, email }) => {
     const { title, id, targetDays = [] } = habit;
@@ -20,7 +19,6 @@ const HabitProgress = ({ habit, email }) => {
     useEffect(() => {
         const calculateProgress = async () => {
             const weekDates = getCurrentWeekDates();
-            const logs = await getAllHabitLogs(email, id);
 
             let applicableDays = 0;
             let completedDays = 0;
@@ -29,7 +27,7 @@ const HabitProgress = ({ habit, email }) => {
                 const dayName = daysLong[idx]; // Get day name for current date index
                 if (targetDays.includes(dayName)) {
                     applicableDays++;
-                    const log = logs.find(log => log.date === dateStr);
+                    const log = habit.logs?.find(log => log.date === dateStr);
                     if (log?.completed) completedDays++;
                 }
             });

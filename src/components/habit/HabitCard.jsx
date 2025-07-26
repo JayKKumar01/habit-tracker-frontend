@@ -38,8 +38,13 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
                 } else if (dateStr > localDateStr) {
                     status.push("grey");
                 } else {
-                    const log = habit.logs.find(log => log.date === dateStr);
+                    const log = habit.logs?.find(log => log.date === dateStr);
                     status.push(log ? (log.completed ? "green" : "red") : "red");
+                    //const todayLog = habit.logs?.find(log => log.date === localDateStr);
+                    //             return {
+                    //                 ...habit,
+                    //                 completedToday: todayLog?.completed || false,
+                    //             };
                 }
             });
 

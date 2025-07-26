@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "../../styles/WeeklyProgressBar.css";
 import HabitProgress from "./HabitProgress";
 import { getLocalDateStr } from "../../utils/dateUtils";
 
 const WeeklyProgressBar = ({ habits, loading, email }) => {
+
     const localDateStr = getLocalDateStr();
 
     const activeHabits = habits.filter(

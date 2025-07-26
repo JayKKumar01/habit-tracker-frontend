@@ -76,7 +76,11 @@ const Dashboard = ({ user }) => {
             <div className="dashboard-header-row">
                 <h1 className="welcome-text">🎯 Welcome, {user.name}</h1>
                 <CurrentWeekIndicator user={user} />
-                <AddHabitButton email={user.email} onHabitCreated={triggerRefresh} />
+                <AddHabitButton
+                    email={user.email}
+                    setHabitsFromAddHabit={setHabits}
+                />
+
             </div>
 
             <div className="dashboard-row">
