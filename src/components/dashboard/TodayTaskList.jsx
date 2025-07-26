@@ -8,18 +8,14 @@ import { getLocalDateStr, getTodayWeekDay } from "../../utils/dateUtils";
 
 const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
     const [todayHabits, setTodayHabits] = useState([]);
-    const [isLogLoading, setIsLogLoading] = useState(true);
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedHabit, setSelectedHabit] = useState(null);
 
     const localDateStr = getLocalDateStr();
 
     useEffect(() => {
-        setIsLogLoading(true);
-
         if (loading || habits.length === 0) {
             setTodayHabits([]);
-            setIsLogLoading(false);
             return;
         }
 
@@ -31,7 +27,6 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
         });
 
         const enrichedHabits = filteredHabits.map(habit => {
-            console.log(habit.logs);
             const todayLog = habit.logs?.find(log => log.date === localDateStr);
             return {
                 ...habit,
@@ -40,7 +35,6 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
         });
 
         setTodayHabits(enrichedHabits);
-        setIsLogLoading(false);
     }, [habits, loading]);
 
     const handleHabitCheck = (habit, checked) => {
@@ -68,13 +62,13 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
         }
     };
 
-    const isEmpty = !loading && !isLogLoading && todayHabits.length === 0;
+    const isEmpty = !loading && todayHabits.length === 0;
 
     return (
         <div className="todays-task-card">
             <h2>✅ Today's Tasks</h2>
 
-            {loading || isLogLoading ? (
+            {loading ? (
                 <p>Loading habits...</p>
             ) : isEmpty ? (
                 <div className="empty-task-placeholder">

@@ -1,9 +1,9 @@
 import React from "react";
 import "../../styles/WeeklyProgressBar.css";
 import HabitProgress from "./HabitProgress";
-import {getLocalDateStr} from "../../utils/dateUtils";
+import { getLocalDateStr } from "../../utils/dateUtils";
 
-const WeeklyProgressBar = ({ habits, email }) => {
+const WeeklyProgressBar = ({ habits, loading, email }) => {
     const localDateStr = getLocalDateStr();
 
     const activeHabits = habits.filter(
@@ -13,11 +13,17 @@ const WeeklyProgressBar = ({ habits, email }) => {
     return (
         <div className="weekly-progress-wrapper">
             <h2>📈 Weekly Progress</h2>
-            <div className="progress-grid">
-                {activeHabits.map(habit => (
-                    <HabitProgress key={habit.id} habit={habit} email={email} />
-                ))}
-            </div>
+            {loading ? (
+                <p>Loading progress...</p>
+            ) : activeHabits.length === 0 ? (
+                <p>No active habits to track this week.</p>
+            ) : (
+                <div className="progress-grid">
+                    {activeHabits.map(habit => (
+                        <HabitProgress key={habit.id} habit={habit} email={email} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

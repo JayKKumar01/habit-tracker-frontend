@@ -92,23 +92,19 @@ const Dashboard = ({ user }) => {
             {/* 📋 Today’s Task + User Info */}
             <div className="dashboard-row">
                 <UserInfoCard user={user} />
-                <TodayTaskList
-                    habits={habits}
-                    loading={loading}
-                    email={user.email}
-                    triggerRefresh={triggerRefresh}
+                <TodayTaskList habits={habits} loading={loading} email={user.email} triggerRefresh={triggerRefresh}
                 />
             </div>
 
-            {/*/!* 📊 Habit Overview *!/*/}
-            {/*<div className="habit-overview-section">*/}
-            {/*    <HabitOverviewGrid habits={habits} email={user.email} triggerRefresh={triggerRefresh} />*/}
-            {/*</div>*/}
+            {/* 📊 Habit Overview */}
+            <div className="habit-overview-section">
+                <HabitOverviewGrid habits={habits} loading={loading} email={user.email} triggerRefresh={triggerRefresh} />
+            </div>
 
-            {/*/!* 📈 Weekly Progress *!/*/}
-            {/*<div className="weekly-progress-section">*/}
-            {/*    <WeeklyProgressBar habits={habits} email={user.email} />*/}
-            {/*</div>*/}
+            {/* 📈 Weekly Progress */}
+            <div className="weekly-progress-section">
+                <WeeklyProgressBar habits={habits} loading={loading} email={user.email} />
+            </div>
 
             {/*/!* 📆 Weekly Logs *!/*/}
             {/*<WeeklyLogList habits={habits} user={user} />*/}

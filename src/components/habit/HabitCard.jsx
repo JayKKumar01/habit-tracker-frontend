@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
 import { softDeleteHabit } from "../../services/habitService";
 import {getCurrentWeekDates, getLocalDateStr} from "../../utils/dateUtils";
-import { getAllHabitLogs } from "../../services/habitLogService";
 import { Trash2 } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
 
@@ -27,7 +26,6 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
     useEffect(() => {
         const fetchLogsAndSetStatus = async () => {
             const currentWeekDates = getCurrentWeekDates();
-            const logs = await getAllHabitLogs(email, habit.id);
 
             const status = [];
             let todayIdx = null;
@@ -40,7 +38,7 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
                 } else if (dateStr > localDateStr) {
                     status.push("grey");
                 } else {
-                    const log = logs.find(log => log.date === dateStr);
+                    const log = habit.logs.find(log => log.date === dateStr);
                     status.push(log ? (log.completed ? "green" : "red") : "red");
                 }
             });
