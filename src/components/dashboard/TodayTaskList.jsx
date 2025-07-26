@@ -28,7 +28,7 @@ const TodayTaskList = ({ habits = [], loading, email, triggerRefresh }) => {
             const validHabits = habits.filter(habit => {
                 const isStartOk = habit.startDate <= localDateStr;
                 const isEndOk = !habit.endDate || habit.endDate > localDateStr;
-                const isFrequencyOk = habit.frequency === "DAILY" || habit.targetDays?.includes(getTodayWeekDay);
+                const isFrequencyOk = habit.frequency === "DAILY" || habit.targetDays?.includes(getTodayWeekDay());
 
                 return isStartOk && isEndOk && isFrequencyOk;
             });
