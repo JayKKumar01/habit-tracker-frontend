@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
 import { softDeleteHabit } from "../../services/habitService";
 import {
-    getCurrentWeekISTDates
+    getCurrentWeekDates
 } from "../../utils/dateUtils";
 import { getAllHabitLogs } from "../../services/habitLogService";
 import { Trash2 } from "lucide-react";
@@ -28,7 +28,7 @@ const HabitCard = ({ habit, email, triggerRefresh }) => {
 
     useEffect(() => {
         const fetchLogsAndSetStatus = async () => {
-            const currentWeekDates = getCurrentWeekISTDates();
+            const currentWeekDates = getCurrentWeekDates();
             const logs = await getAllHabitLogs(email, habit.id);
 
             const status = currentWeekDates.map((dateStr, idx) => {

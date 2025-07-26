@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitProgress.css";
-import { getCurrentWeekISTDates } from "../../utils/dateUtils";
+import { getCurrentWeekDates } from "../../utils/dateUtils";
 import { getAllHabitLogs } from "../../services/habitLogService";
 
 const HabitProgress = ({ habit, email }) => {
@@ -19,7 +19,7 @@ const HabitProgress = ({ habit, email }) => {
 
     useEffect(() => {
         const calculateProgress = async () => {
-            const weekDates = getCurrentWeekISTDates();
+            const weekDates = getCurrentWeekDates();
             const logs = await getAllHabitLogs(email, id);
 
             let applicableDays = 0;

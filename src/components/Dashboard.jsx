@@ -77,9 +77,9 @@ const Dashboard = ({ user }) => {
 
             </div>
 
-            {/*<div className="weekly-progress-section">*/}
-            {/*    <WeeklyProgressBar habits={habits} email={user.email}/>*/}
-            {/*</div>*/}
+            <div className="weekly-progress-section">
+                <WeeklyProgressBar habits={habits} email={user.email}/>
+            </div>
 
             {/*<div className="weekly-logs-section">*/}
             {/*    <WeeklyLogCard weekNumber={3} habits={habits} defaultOpen={true} />*/}

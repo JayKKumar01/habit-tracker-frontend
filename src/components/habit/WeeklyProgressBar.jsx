@@ -1,13 +1,12 @@
 import React from "react";
 import "../../styles/WeeklyProgressBar.css";
-import { getTodayISTDateStr } from "../../utils/dateUtils";
 import HabitProgress from "./HabitProgress";
 
 const WeeklyProgressBar = ({ habits, email }) => {
-    const today = getTodayISTDateStr();
+    const todayDateStr = new Date().toISOString().slice(0, 10);
 
     const activeHabits = habits.filter(
-        habit => !habit.endDate || habit.endDate > today
+        habit => !habit.endDate || habit.endDate > todayDateStr
     );
 
     return (

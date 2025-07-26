@@ -34,7 +34,7 @@ export const getTodayISTDay = () => {
     }).toUpperCase();
 };
 // ✅ Get current week's dates (Monday to Sunday) based on IST
-export const getCurrentWeekISTDates = () => {
+export const getCurrentWeekDates = () => {
     const date = new Date(); // already adjusted to IST
     const currentDayIndex = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 
