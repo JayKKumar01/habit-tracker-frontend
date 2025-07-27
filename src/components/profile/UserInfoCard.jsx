@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import "../../styles/UserInfoCard.css";
 import { Pencil } from "lucide-react";
 import EditProfileForm from "./EditProfileForm";
-import { getProfile } from "../../services/profileService";
+import { getProfile, saveOrUpdateProfile } from "../../services/profileService";
 
 const UserInfoCard = ({ user, setUserFromProfile }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [bio, setBio] = useState("Loading...");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchBio = async () => {
@@ -26,13 +28,19 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
         }
     }, [user.email, user.bio, setUserFromProfile]);
 
-    const handleEditSubmit = async (updatedFields) => {
-        setUserFromProfile((prevUser) => ({
-            ...prevUser,
-            ...updatedFields
-        }));
-        setBio(updatedFields.bio?.trim() || "No bio set");
-        setIsEditing(false);
+    const handleEditSubmit = async ({ name, bio }) => {
+        setLoading(true);
+        setError("");
+        try {
+            await saveOrUpdateProfile(user.email, bio);
+            setUserFromProfile((prevUser) => ({ ...prevUser, name, bio }));
+            setBio(bio?.trim() || "No bio set");
+            setIsEditing(false);
+        } catch (err) {
+            setError(err.message || "Failed to save changes.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (isEditing) {
@@ -41,6 +49,8 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
                 user={user}
                 onSubmit={handleEditSubmit}
                 onCancel={() => setIsEditing(false)}
+                loading={loading}
+                error={error}
             />
         );
     }

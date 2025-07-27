@@ -1,31 +1,18 @@
 import React, { useState } from "react";
 import "../../styles/EditProfileForm.css";
-import { saveOrUpdateProfile } from "../../services/profileService";
 
-const EditProfileForm = ({ user, onSubmit, onCancel }) => {
+const EditProfileForm = ({ user, onSubmit, onCancel, loading, error }) => {
     const [name, setName] = useState(user.name || "");
     const [bio, setBio] = useState(user.bio || "");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
 
-    const handleSave = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        setLoading(true);
-        setError("");
-
-        try {
-            await saveOrUpdateProfile(user.email, bio);
-            onSubmit({ name, bio });
-        } catch (err) {
-            setError(err.message || "Failed to save changes.");
-        } finally {
-            setLoading(false);
-        }
+        onSubmit({ name, bio });
     };
 
     return (
         <div className="edit-profile-form">
-            <form onSubmit={handleSave}>
+            <form onSubmit={handleSubmit}>
                 <h2>✏️ Edit Profile</h2>
 
                 <div className="form-group">
@@ -53,11 +40,11 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
                 {error && <p className="form-error">{error}</p>}
 
                 <div className="form-actions">
-                    <button type="button" onClick={onCancel} disabled={loading}>
-                        Cancel
-                    </button>
                     <button type="submit" disabled={loading}>
                         {loading ? "Saving..." : "Save"}
+                    </button>
+                    <button type="button" onClick={onCancel} disabled={loading}>
+                        Cancel
                     </button>
                 </div>
             </form>
