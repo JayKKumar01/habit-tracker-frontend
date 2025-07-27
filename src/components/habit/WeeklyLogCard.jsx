@@ -40,7 +40,7 @@ const WeeklyLogCard = ({ weekNumber, habits = [], startDate, defaultOpen = false
     return (
         <div
             className="weekly-log-card"
-            style={{ maxHeight: isOpen ? "280px" : "50px", overflow: "hidden" }}
+            style={{ maxHeight: isOpen ? "500px" : "50px", overflow: "hidden" }}
         >
             <div className="log-card-header" onClick={() => setIsOpen((prev) => !prev)}>
                 <h3>
@@ -64,7 +64,6 @@ const WeeklyLogCard = ({ weekNumber, habits = [], startDate, defaultOpen = false
                         const logsByDate = {};
                         (habit.logs || []).forEach(log => {
                             logsByDate[log.date] = log.completed;
-                            console.log("Log Date: ", log.date);
                         });
 
                         const statusForWeek = weekDates.map((date, idx) => {
@@ -74,7 +73,6 @@ const WeeklyLogCard = ({ weekNumber, habits = [], startDate, defaultOpen = false
 
                             if (!isTarget) return "grey-na";
                             if (isFuture) return "grey";
-                            console.log("WeekDate: ", date);
                             const completed = logsByDate[date];
                             return completed ? "green" : "red";
                         });

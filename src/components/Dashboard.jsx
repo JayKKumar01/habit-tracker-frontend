@@ -20,18 +20,32 @@ import { useNavigate } from "react-router-dom";
 const Dashboard = ({ user }) => {
     const [habits, setHabits] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [fullyLoaded, setFullyLoaded] = useState(false); // central spinner
     const [refreshKey, setRefreshKey] = useState(0);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        const fetchHabitsAndLogs = async () => {
+        const fetchHabitsThenLogs = async () => {
             setLoading(true);
+            setFullyLoaded(false); // show spinner until all fetches done
+            const totalStart = performance.now();
+
             try {
-                const [habitsData, logsData] = await Promise.all([
-                    getUserHabits(user.email),
-                    getAllLogsForUser(user.email),
-                ]);
+                // Step 1: Fetch Habits
+                const habitsStart = performance.now();
+                const habitsData = await getUserHabits(user.email);
+                const habitsEnd = performance.now();
+                console.log(`✅ getUserHabits took ${(habitsEnd - habitsStart).toFixed(2)} ms`);
+
+                setHabits(habitsData);
+                setLoading(false); // habits ready (for per-section loading)
+
+                // Step 2: Fetch Logs
+                const logsStart = performance.now();
+                const logsData = await getAllLogsForUser(user.email);
+                const logsEnd = performance.now();
+                console.log(`✅ getAllLogsForUser took ${(logsEnd - logsStart).toFixed(2)} ms`);
 
                 const logsByHabit = logsData.reduce((acc, log) => {
                     if (!acc[log.habitId]) acc[log.habitId] = [];
@@ -44,28 +58,19 @@ const Dashboard = ({ user }) => {
                     logs: logsByHabit[habit.id] || [],
                 }));
 
-                // console.log("📋 Habits with Logs:");
-                // habitsWithLogs.forEach(habit => {
-                //     console.log(`\n🟢 ${habit.title} [${habit.frequency}]`);
-                //     if (habit.logs.length === 0) {
-                //         console.log("   🔸 No logs yet.");
-                //     } else {
-                //         habit.logs.forEach(log => {
-                //             console.log(`   ✅ ${log.date} - ${log.status}`);
-                //         });
-                //     }
-                // });
-
                 setHabits(habitsWithLogs);
             } catch (err) {
                 console.error("❌ Failed to load habits or logs:", err.message);
                 setHabits([]);
             } finally {
+                const totalEnd = performance.now();
+                console.log(`🕒 Total fetch + update time: ${(totalEnd - totalStart).toFixed(2)} ms`);
                 setLoading(false);
+                setFullyLoaded(true); // hide spinner only after everything is ready
             }
         };
 
-        fetchHabitsAndLogs();
+        fetchHabitsThenLogs();
     }, [user.email, refreshKey]);
 
     const triggerRefresh = () => setRefreshKey(prev => prev + 1);
@@ -80,6 +85,12 @@ const Dashboard = ({ user }) => {
                 }}
             />
 
+            {!fullyLoaded && (
+                <div className="full-screen-loader">
+                    <div className="spinner" />
+                </div>
+            )}
+
             <div className="dashboard-title-row">
                 <h1 className="app-title">Habit Tracker</h1>
                 <LogoutButton />
@@ -92,7 +103,6 @@ const Dashboard = ({ user }) => {
                     email={user.email}
                     setHabitsFromAddHabit={setHabits}
                 />
-
             </div>
 
             <div className="dashboard-row">
@@ -106,11 +116,20 @@ const Dashboard = ({ user }) => {
             </div>
 
             <div className="habit-overview-section">
-                <HabitOverviewGrid habits={habits} loading={loading} email={user.email} setHabitsFromHabitOverview={setHabits} />
+                <HabitOverviewGrid
+                    habits={habits}
+                    loading={loading}
+                    email={user.email}
+                    setHabitsFromHabitOverview={setHabits}
+                />
             </div>
 
             <div className="weekly-progress-section">
-                <WeeklyProgressBar habits={habits} loading={loading} email={user.email} />
+                <WeeklyProgressBar
+                    habits={habits}
+                    loading={loading}
+                    email={user.email}
+                />
             </div>
 
             <WeeklyLogList habits={habits} loading={loading} user={user} />
