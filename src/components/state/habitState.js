@@ -14,3 +14,6 @@ export const updateHabitInList = (habits, habitId, updates) =>
     habits.map(habit =>
         habit.id === habitId ? { ...habit, ...updates } : habit
     );
+export const deleteHabitInList = (habits, habitId) => {
+    return habits.filter(habit => habit.id !== habitId);
+};

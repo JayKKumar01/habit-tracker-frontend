@@ -88,36 +88,25 @@ export const getUserHabits = async (email) => {
     return data;
 };
 
-// ✅ Get a habit by ID
-export const getHabitById = async (id) => {
-    const res = await fetch(`${HABIT_URL}/${id}`, {
-        method: "GET",
+// ✅ Hard delete a habit by ID
+export const deleteHabit = async (email, habitId) => {
+    const res = await fetch(`${HABIT_URL}/delete/${email}`, {
+        method: "DELETE",
         headers: getAuthHeaders(),
+        body: JSON.stringify({
+            habitId,
+        }),
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-        const errorMsg = data.error || data.message || "Failed to fetch habit.";
+        const errorMsg = data.error || data.message || "Failed to delete habit.";
         throw new Error(errorMsg);
     }
 
     return data;
 };
 
-// ✅ Delete a habit by ID
-export const deleteHabit = async (id) => {
-    const res = await fetch(`${HABIT_URL}/${id}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-    });
 
-    if (!res.ok) {
-        const data = await res.json();
-        const errorMsg = data.error || data.message || "Failed to delete habit.";
-        throw new Error(errorMsg);
-    }
-
-    return true; // Successfully deleted
-};
 

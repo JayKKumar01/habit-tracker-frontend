@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
-import {editHabit, softDeleteHabit} from "../../services/habitService";
+import {deleteHabit, editHabit, softDeleteHabit} from "../../services/habitService";
 import { getCurrentWeekDates, getLocalDateStr } from "../../utils/dateUtils";
 import { Trash2, Pencil } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
-import { updateHabitInList } from "../state/habitState";
+import { updateHabitInList, deleteHabitInList} from "../state/habitState";
 import EditHabitForm from "./EditHabitForm"; // ✅ NEW
 
 const daysShort = ["M", "T", "W", "T", "F", "S", "S"];
@@ -61,12 +61,13 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
         setStreak(streakCount);
     }, [habit, todayIndex, weekStatus]);
 
-    const handleSoftDelete = async () => {
+    const handleDelete = async () => {
         try {
-            await softDeleteHabit(email, habit.id, localDateStr);
+            const res = await deleteHabit(email, habit.id);
             setHabitsFromHabitCard(prev =>
-                updateHabitInList(prev, habit.id, { endDate: localDateStr })
+                deleteHabitInList(prev, habit.id)
             );
+            console.log(res);
             setModalOpen(false);
         } catch (error) {
             alert("Failed to delete habit: " + error.message);
@@ -130,7 +131,7 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
             <ConfirmModal
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}
-                onConfirm={handleSoftDelete}
+                onConfirm={handleDelete}
                 message="Delete this habit?"
             />
         </div>
