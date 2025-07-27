@@ -23,7 +23,7 @@ const EditHabitForm = ({ habit, onSubmit, onCancel }) => {
             return;
         }
 
-        if (trimmedTitle.length > 20) {
+        if (trimmedTitle.length > 21) {
             setError("Title can't be too long.");
             return;
         }

@@ -43,7 +43,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
             return;
         }
 
-        if (title.length > 20) {
+        if (title.length > 21) {
             setError("Title can't be too long");
             setLoading(false);
             return;
