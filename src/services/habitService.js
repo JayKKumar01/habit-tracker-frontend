@@ -28,6 +28,23 @@ export const createHabit = async (habitData, email) => {
 
     return data;
 };
+// ✅ Edit an existing habit
+export const editHabit = async (updatedHabit, email) => {
+    const res = await fetch(`${HABIT_URL}/edit/${email}`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updatedHabit),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        const errorMsg = data.error || data.message || "Failed to update habit.";
+        throw new Error(errorMsg);
+    }
+
+    return data;
+};
 
 export const softDeleteHabit = async (email, id, endDateStr) => {
     const res = await fetch(`${HABIT_URL}/soft-delete/${email}`, {

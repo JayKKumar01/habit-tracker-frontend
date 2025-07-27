@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
-import { softDeleteHabit } from "../../services/habitService";
+import {editHabit, softDeleteHabit} from "../../services/habitService";
 import { getCurrentWeekDates, getLocalDateStr } from "../../utils/dateUtils";
 import { Trash2, Pencil } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
@@ -73,12 +73,16 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
         }
     };
 
-    const handleEditSubmit = (updatedHabit) => {
-        setHabitsFromHabitCard(prev =>
-            updateHabitInList(prev, habit.id, updatedHabit)
+    const handleEditSubmit = async (updates) => {
+        // await editHabit(updatedHabit, email);
+        console.log(updates);
+        setHabitsFromHabitCard((prev) =>
+            updateHabitInList(prev, habit.id, updates)
         );
+
         setIsEditing(false);
     };
+
 
     if (isEditing) {
         return (

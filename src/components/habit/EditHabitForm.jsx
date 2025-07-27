@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/EditHabitForm.css"; // Reuse existing styles
+import "../../styles/EditHabitForm.css";
 
 const EditHabitForm = ({ habit, onSubmit, onCancel }) => {
     const [title, setTitle] = useState(habit.title);
@@ -10,40 +10,54 @@ const EditHabitForm = ({ habit, onSubmit, onCancel }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-        setLoading(true);
 
-        if (!title.trim()) {
+        const trimmedTitle = title.trim();
+        const trimmedDescription = description.trim();
+
+        if (!trimmedTitle) {
             setError("Title is required.");
-            setLoading(false);
             return;
         }
 
-        if (title.length > 20) {
+        if (trimmedTitle.length > 20) {
             setError("Title can't be too long.");
-            setLoading(false);
             return;
         }
 
-        if (!description.trim()) {
+        if (!trimmedDescription) {
             setError("Description is required.");
-            setLoading(false);
             return;
         }
 
-        if (description.length > 100) {
+        if (trimmedDescription.length > 100) {
             setError("That description is a bit too long.");
-            setLoading(false);
             return;
         }
 
-        onSubmit({
-            ...habit,
-            title: title.trim(),
-            description: description.trim(),
-        });
+        const hasChanges =
+            trimmedTitle !== habit.title || trimmedDescription !== habit.description;
 
-        setLoading(false);
+        if (!hasChanges) {
+            setError("No changes made.");
+            return;
+        }
+
+        const updates = {
+            title: trimmedTitle,
+            description: trimmedDescription,
+        };
+
+        setLoading(true);
+        try {
+            await onSubmit(updates);
+        } catch (err) {
+            setError("Failed to update habit.");
+        } finally {
+            setLoading(false);
+        }
     };
+
+
 
     return (
         <div className="habit-form-backdrop">

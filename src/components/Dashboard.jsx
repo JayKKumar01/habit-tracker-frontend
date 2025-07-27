@@ -44,17 +44,17 @@ const Dashboard = ({ user }) => {
                     logs: logsByHabit[habit.id] || [],
                 }));
 
-                console.log("📋 Habits with Logs:");
-                habitsWithLogs.forEach(habit => {
-                    console.log(`\n🟢 ${habit.title} [${habit.frequency}]`);
-                    if (habit.logs.length === 0) {
-                        console.log("   🔸 No logs yet.");
-                    } else {
-                        habit.logs.forEach(log => {
-                            console.log(`   ✅ ${log.date} - ${log.status}`);
-                        });
-                    }
-                });
+                // console.log("📋 Habits with Logs:");
+                // habitsWithLogs.forEach(habit => {
+                //     console.log(`\n🟢 ${habit.title} [${habit.frequency}]`);
+                //     if (habit.logs.length === 0) {
+                //         console.log("   🔸 No logs yet.");
+                //     } else {
+                //         habit.logs.forEach(log => {
+                //             console.log(`   ✅ ${log.date} - ${log.status}`);
+                //         });
+                //     }
+                // });
 
                 setHabits(habitsWithLogs);
             } catch (err) {
