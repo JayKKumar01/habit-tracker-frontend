@@ -25,6 +25,9 @@ const Dashboard = ({ user }) => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
+
+
+
     useEffect(() => {
         const fetchHabitsThenLogs = async () => {
             setLoading(true);
