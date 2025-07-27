@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
-import {deleteHabit, editHabit, softDeleteHabit} from "../../services/habitService";
+import {deleteHabit, editHabit} from "../../services/habitService";
 import { getCurrentWeekDates, getLocalDateStr } from "../../utils/dateUtils";
 import { Trash2, Pencil } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";

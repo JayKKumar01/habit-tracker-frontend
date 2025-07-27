@@ -46,29 +46,6 @@ export const editHabit = async (updatedHabitData, email) => {
     return data;
 };
 
-export const softDeleteHabit = async (email, id, endDateStr) => {
-    const res = await fetch(`${HABIT_URL}/soft-delete/${email}`, {
-        method: "PUT",
-        headers: {
-            ...getAuthHeaders(),
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            id,
-            endDate: endDateStr, // format: "YYYY-MM-DD"
-        }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-        const errorMsg = data.error || data.message || "Failed to soft delete habit.";
-        throw new Error(errorMsg);
-    }
-
-    return data;
-};
-
 
 
 // ✅ Get all habits for a user
