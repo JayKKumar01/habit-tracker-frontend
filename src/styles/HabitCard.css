@@ -1,5 +1,5 @@
 .habit-card {
-    position: relative; /* 👈 Add this */
+    position: relative;
     background-color: #e3f2fd;
     border-left: 5px solid #1976d2;
     border-radius: 10px;
@@ -11,7 +11,6 @@
     flex-shrink: 0;
 }
 
-
 .habit-card h3 {
     margin-top: 0;
     color: #0d47a1;
@@ -20,7 +19,7 @@
 .habit-description {
     font-style: italic;
     font-size: 13px;
-    margin: 0 0 10px; /* ✅ Removed top margin */
+    margin: 0 0 10px;
     color: #333;
     background-color: #ffffff8a;
     border-left: 3px solid #1976d2;
@@ -29,27 +28,37 @@
     overflow: auto;
 }
 
-
-
 .habit-card p {
     margin: 6px 0;
     font-size: 14px;
 }
 
-.delete-btn {
+.delete-btn,
+.edit-btn {
     background: transparent;
     border: none;
     cursor: pointer;
     position: absolute;
     top: 8px;
-    right: 8px;
     padding: 4px;
     border-radius: 50%;
     transition: background 0.2s ease;
 }
 
+.delete-btn {
+    right: 8px;
+}
+
+.edit-btn {
+    right: 36px; /* Placed left to delete */
+}
+
 .delete-btn:hover {
     background: rgba(231, 76, 60, 0.1);
+}
+
+.edit-btn:hover {
+    background: rgba(243, 156, 18, 0.1);
 }
 
 .weekly-tracker {
@@ -79,29 +88,21 @@
     font-weight: normal;
 }
 
-
-/* Default greyed out */
 .day-indicator.grey {
     background-color: #e0e0e0;
     color: #555;
 }
 
-
-/* Completed – Green */
 .day-indicator.green {
     background-color: #81c784;
     color: white;
 }
 
-/* Missed – Red */
 .day-indicator.red {
     background-color: #e57373;
     color: white;
 }
-/* Orange border for today's day */
+
 .day-indicator.today-border {
     border: 2px solid blue;
 }
-
-
-

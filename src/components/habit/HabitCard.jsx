@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
 import { softDeleteHabit } from "../../services/habitService";
-import {getCurrentWeekDates, getLocalDateStr} from "../../utils/dateUtils";
-import { Trash2 } from "lucide-react";
+import { getCurrentWeekDates, getLocalDateStr } from "../../utils/dateUtils";
+import { Trash2, Pencil } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
-import {updateHabitInList} from "../state/habitState";
+import { updateHabitInList } from "../state/habitState";
+import EditHabitForm from "./EditHabitForm"; // ✅ NEW
 
 const daysShort = ["M", "T", "W", "T", "F", "S", "S"];
 const daysLong = [
-    "MONDAY",
-    "TUESDAY",
-    "WEDNESDAY",
-    "THURSDAY",
-    "FRIDAY",
-    "SATURDAY",
-    "SUNDAY",
+    "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
+    "FRIDAY", "SATURDAY", "SUNDAY"
 ];
 
 const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
     const localDateStr = getLocalDateStr();
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false); // ✅ NEW
     const [weekStatus, setWeekStatus] = useState([]);
     const [todayIndex, setTodayIndex] = useState(null);
     const [streak, setStreak] = useState(0);
@@ -27,7 +24,6 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
     useEffect(() => {
         const fetchLogsAndSetStatus = async () => {
             const currentWeekDates = getCurrentWeekDates();
-
             const status = [];
             let todayIdx = null;
 
@@ -55,7 +51,6 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
         if (todayIndex === null || weekStatus.length === 0) return;
 
         let streakCount = 0;
-
         for (let i = todayIndex; i >= 0; i--) {
             const day = daysLong[i];
             if (!habit.targetDays.includes(day)) continue;
@@ -69,25 +64,44 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
     const handleSoftDelete = async () => {
         try {
             await softDeleteHabit(email, habit.id, localDateStr);
-            setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, {endDate: localDateStr}));
+            setHabitsFromHabitCard(prev =>
+                updateHabitInList(prev, habit.id, { endDate: localDateStr })
+            );
             setModalOpen(false);
         } catch (error) {
             alert("Failed to delete habit: " + error.message);
         }
     };
 
+    const handleEditSubmit = (updatedHabit) => {
+        setHabitsFromHabitCard(prev =>
+            updateHabitInList(prev, habit.id, updatedHabit)
+        );
+        setIsEditing(false);
+    };
+
+    if (isEditing) {
+        return (
+            <EditHabitForm
+                habit={habit}
+                onSubmit={handleEditSubmit}
+                onCancel={() => setIsEditing(false)}
+            />
+        );
+    }
+
     return (
         <div className="habit-card">
+            <button className="edit-btn" onClick={() => setIsEditing(true)}>
+                <Pencil size={18} color="#f39c12" strokeWidth={2} />
+            </button>
+
             <button className="delete-btn" onClick={() => setModalOpen(true)}>
                 <Trash2 size={18} color="#e74c3c" strokeWidth={2} />
             </button>
 
             <h3>{habit.title}</h3>
-
-            {habit.description && (
-                <p className="habit-description">{habit.description}</p>
-            )}
-
+            {habit.description && <p className="habit-description">{habit.description}</p>}
             <p><strong>Frequency:</strong> {habit.frequency}</p>
             <p><strong>Streak:</strong> {streak} 🔥</p>
 
