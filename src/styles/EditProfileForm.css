@@ -1,0 +1,78 @@
+.edit-profile-form {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 24px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.edit-profile-form h2 {
+    margin-bottom: 16px;
+    font-size: 20px;
+    color: #2e3a59;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.form-actions button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.form-actions button[type="submit"] {
+    background-color: #1976d2;
+    color: white;
+}
+
+.form-actions button[type="submit"]:hover {
+    background-color: #155fa0;
+}
+
+.form-actions button[type="button"] {
+    background-color: #eee;
+    color: #333;
+}
+
+.form-actions button[type="button"]:hover {
+    background-color: #ddd;
+}
+
+.form-error {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}

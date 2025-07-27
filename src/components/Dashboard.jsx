@@ -17,7 +17,8 @@ import { getAllLogsForUser } from "../services/habitLogService";
 import TokenExpiryWatcher from "../services/TokenExpiryWatcher";
 import { useNavigate } from "react-router-dom";
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ user: initialUser }) => {
+    const [user, setUser] = useState(initialUser); // ✅ make user stateful
     const [habits, setHabits] = useState([]);
     const [loading, setLoading] = useState(true);
     const [fullyLoaded, setFullyLoaded] = useState(false); // central spinner
@@ -109,7 +110,7 @@ const Dashboard = ({ user }) => {
             </div>
 
             <div className="dashboard-row">
-                <UserInfoCard user={user} />
+                <UserInfoCard user={user} setUserFromProfile={setUser} />
                 <TodayTaskList
                     habits={habits}
                     loading={loading}
