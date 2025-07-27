@@ -74,8 +74,15 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
     };
 
     const handleEditSubmit = async (updates) => {
-        // await editHabit(updatedHabit, email);
-        console.log(updates);
+        const updatedHabitData = {
+            habitId: habit.id,
+            title: updates.title,
+            description: updates.description,
+            endDate: updates.endDate
+        };
+
+        const res = await editHabit(updatedHabitData, email);
+        console.log(res);
         setHabitsFromHabitCard((prev) =>
             updateHabitInList(prev, habit.id, updates)
         );

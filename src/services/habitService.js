@@ -29,11 +29,11 @@ export const createHabit = async (habitData, email) => {
     return data;
 };
 // ✅ Edit an existing habit
-export const editHabit = async (updatedHabit, email) => {
+export const editHabit = async (updatedHabitData, email) => {
     const res = await fetch(`${HABIT_URL}/edit/${email}`, {
         method: "PUT",
         headers: getAuthHeaders(),
-        body: JSON.stringify(updatedHabit),
+        body: JSON.stringify(updatedHabitData),
     });
 
     const data = await res.json();
