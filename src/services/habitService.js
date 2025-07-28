@@ -48,7 +48,7 @@ export const editHabit = async (updatedHabitData, email) => {
 
 
 // ✅ Get all habits by user ID (faster backend query)
-export const getUserHabitsById = async (userId) => {
+export const getHabitsByUserId = async (userId) => {
     const res = await fetch(`${HABIT_URL}/user/${userId}`, {
         method: "GET",
         headers: getAuthHeaders(),

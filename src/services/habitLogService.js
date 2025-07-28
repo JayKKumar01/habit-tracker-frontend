@@ -30,7 +30,7 @@ export const updateHabitLog = async (email, habitLogData) => {
 };
 
 // ✅ Get all logs for a habit
-export const getAllHabitLogs = async (email, habitId) => {
+export const getLogsByHabit = async (email, habitId) => {
     const res = await fetch(`${HABIT_LOG_URL}/all/${email}/${habitId}`, {
         method: "GET",
         headers: getAuthHeaders(),
@@ -47,7 +47,7 @@ export const getAllHabitLogs = async (email, habitId) => {
 };
 
 // ✅ Get all logs for a user (used to batch fetch logs for all habits)
-export const getAllLogsForUserById = async (userId) => {
+export const getLogsByUserId = async (userId) => {
     const res = await fetch(`${HABIT_LOG_URL}/all/${userId}`, {
         method: "GET",
         headers: getAuthHeaders(),
