@@ -50,7 +50,7 @@ export const editHabit = async (updatedHabitData, email) => {
 
 // ✅ Get all habits for a user
 export const getUserHabits = async (email) => {
-    const res = await fetch(`${HABIT_URL}/user/${email}`, {
+    const res = await fetch(`${HABIT_URL}/user-email/${email}`, {
         method: "GET",
         headers: getAuthHeaders(),
     });
@@ -64,6 +64,24 @@ export const getUserHabits = async (email) => {
 
     return data;
 };
+
+// ✅ Get all habits by user ID (faster backend query)
+export const getUserHabitsById = async (userId) => {
+    const res = await fetch(`${HABIT_URL}/user-id/${userId}`, {
+        method: "GET",
+        headers: getAuthHeaders(),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        const errorMsg = data.error || data.message || "Failed to fetch habits.";
+        throw new Error(errorMsg);
+    }
+
+    return data;
+};
+
 
 // ✅ Hard delete a habit by ID
 export const deleteHabit = async (email, habitId) => {
