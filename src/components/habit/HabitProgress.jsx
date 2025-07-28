@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../styles/HabitProgress.css";
 import { getCurrentWeekDates } from "../../utils/dateUtils";
 
-const HabitProgress = ({ habit, email }) => {
+const HabitProgress = ({ habit, userId }) => {
     const { title, id, targetDays = [] } = habit;
     const [completionRate, setCompletionRate] = useState(0);
 
@@ -40,7 +40,7 @@ const HabitProgress = ({ habit, email }) => {
         };
 
         calculateProgress();
-    }, [habit, email]);
+    }, [habit, userId]);
 
     return (
         <div className="progress-card">

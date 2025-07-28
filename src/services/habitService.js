@@ -66,8 +66,8 @@ export const getHabitsWithLogsByUserId = async (userId) => {
 
 
 // ✅ Hard delete a habit by ID
-export const deleteHabit = async (email, habitId) => {
-    const res = await fetch(`${HABIT_URL}/delete/${email}`, {
+export const deleteHabit = async (userId, habitId) => {
+    const res = await fetch(`${HABIT_URL}/delete/${userId}`, {
         method: "DELETE",
         headers: getAuthHeaders(),
         body: JSON.stringify({

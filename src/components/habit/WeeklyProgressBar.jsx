@@ -3,7 +3,7 @@ import "../../styles/WeeklyProgressBar.css";
 import HabitProgress from "./HabitProgress";
 import { getLocalDateStr } from "../../utils/dateUtils";
 
-const WeeklyProgressBar = ({ habits, loading, email }) => {
+const WeeklyProgressBar = ({ habits, loading, userId }) => {
 
     const localDateStr = getLocalDateStr();
 
@@ -21,7 +21,7 @@ const WeeklyProgressBar = ({ habits, loading, email }) => {
             ) : (
                 <div className="progress-grid">
                     {activeHabits.map(habit => (
-                        <HabitProgress key={habit.id} habit={habit} email={email} />
+                        <HabitProgress key={habit.id} habit={habit} userId={userId} />
                     ))}
                 </div>
             )}

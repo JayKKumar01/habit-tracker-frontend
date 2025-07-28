@@ -49,7 +49,7 @@ const Dashboard = ({ user: initialUser }) => {
         };
 
         fetchHabitsThenLogs();
-    }, [user.userId, refreshKey]);
+    }, [user.id, refreshKey]);
 
     const triggerRefresh = () => setRefreshKey(prev => prev + 1);
 
@@ -106,7 +106,7 @@ const Dashboard = ({ user: initialUser }) => {
                 <WeeklyProgressBar
                     habits={habits}
                     loading={loading}
-                    email={user.email}
+                    userId={user.id}
                 />
             </div>
 
