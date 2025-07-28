@@ -13,7 +13,7 @@ import WeeklyLogList from "./report/WeeklyLogList";
 
 // Utilities
 import {getUserHabitsById} from "../services/habitService";
-import { getAllLogsForUser } from "../services/habitLogService";
+import {getAllLogsForUser, getAllLogsForUserById} from "../services/habitLogService";
 import TokenExpiryWatcher from "../services/TokenExpiryWatcher";
 import { useNavigate } from "react-router-dom";
 
@@ -47,8 +47,9 @@ const Dashboard = ({ user: initialUser }) => {
 
                 // Step 2: Fetch Logs
                 const logsStart = performance.now();
-                const logsData = await getAllLogsForUser(user.email);
-                // const logsData = await getAllLogsForUser(user.id);
+                // const logsData = await getAllLogsForUser(user.email);
+                const logsData = await getAllLogsForUserById(user.id);
+                console.log(logsData);
                 const logsEnd = performance.now();
                 console.log(`✅ getAllLogsForUser took ${(logsEnd - logsStart).toFixed(2)} ms`);
 
