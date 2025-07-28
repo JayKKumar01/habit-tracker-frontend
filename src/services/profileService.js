@@ -29,11 +29,11 @@ export const getProfile = async (userId) => {
 };
 
 // ✅ Save or update profile bio
-export const saveOrUpdateProfile = async (userId, bio) => {
+export const saveOrUpdateProfile = async (userId, profileData) => {
     const res = await fetch(`${PROFILE_URL}/save/${userId}`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify({ bio }),
+        body: JSON.stringify(profileData), // { name, bio }
     });
 
     const data = await res.json();
@@ -45,3 +45,4 @@ export const saveOrUpdateProfile = async (userId, bio) => {
 
     return data;
 };
+

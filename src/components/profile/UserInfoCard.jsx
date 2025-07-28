@@ -26,13 +26,14 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
         } else {
             setBio(user.bio.trim() || "No bio set");
         }
-    }, [user.userId, user.bio, setUserFromProfile]);
+    }, [user.id, user.bio, setUserFromProfile]);
 
     const handleEditSubmit = async ({ name, bio }) => {
         setLoading(true);
         setError("");
         try {
-            await saveOrUpdateProfile(user.id, bio);
+            const profileData = { name, bio };
+            await saveOrUpdateProfile(user.id, profileData);
             setUserFromProfile((prevUser) => ({ ...prevUser, name, bio }));
             setBio(bio?.trim() || "No bio set");
             setIsEditing(false);
@@ -67,7 +68,7 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
 
                 <div className="user-info-content">
                     <p><strong>Name:</strong> {user.name}</p>
-                    <p><strong>Email:</strong> {user.userId}</p>
+                    <p><strong>Email:</strong> {user.email}</p>
                     <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
                     <p>
                         <strong>Bio:</strong>{" "}
