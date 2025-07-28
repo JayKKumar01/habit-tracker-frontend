@@ -7,7 +7,7 @@ import { updateHabitLog } from "../../services/habitLogService";
 import { getLocalDateStr, getTodayWeekDay } from "../../utils/dateUtils";
 import { updateLocalLog, revertLocalLog } from "../state/habitLogState";
 
-const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
+const TodayTaskList = ({ habits = [], loading, user, setHabitsFromChild }) => {
     const [todayHabits, setTodayHabits] = useState([]);
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedHabit, setSelectedHabit] = useState(null);
@@ -50,7 +50,7 @@ const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
 
         try {
             // ✅ Send to server
-            await updateHabitLog(email, {
+            await updateHabitLog(user.email, {
                 habitId: id,
                 date: localDateStr,
                 completed: checked,
@@ -77,7 +77,7 @@ const TodayTaskList = ({ habits = [], loading, email, setHabitsFromChild }) => {
             ) : isEmpty ? (
                 <div className="empty-task-placeholder">
                     <p className="no-habit-text">You haven’t added any habits yet.</p>
-                    <AddHabitButton email={email} setHabitsFromAddHabit={setHabitsFromChild} />
+                    <AddHabitButton userId={user.id} setHabitsFromAddHabit={setHabitsFromChild} />
                 </div>
             ) : (
                 <div className="task-list-wrapper">

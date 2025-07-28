@@ -3,7 +3,7 @@ import { createHabit } from "../../services/habitService";
 import {daysOfWeek, getLocalDateStr,} from "../../utils/dateUtils";
 import "../../styles/HabitForm.css";
 
-const HabitForm = ({ email, onSuccess, onClose }) => {
+const HabitForm = ({ userId, onSuccess, onClose }) => {
     const localDateStr = getLocalDateStr();
 
     const [title, setTitle] = useState("");
@@ -79,7 +79,7 @@ const HabitForm = ({ email, onSuccess, onClose }) => {
         };
 
         try {
-            const createdHabit = await createHabit(payload, email);
+            const createdHabit = await createHabit(payload, userId);
             onSuccess(createdHabit);
             onClose();
             resetForm();

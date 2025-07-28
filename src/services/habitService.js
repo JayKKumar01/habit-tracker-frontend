@@ -12,8 +12,8 @@ const getAuthHeaders = () => {
 };
 
 // ✅ Create a new habit
-export const createHabit = async (habitData, email) => {
-    const res = await fetch(`${HABIT_URL}/create/${email}`, {
+export const createHabit = async (habitData, userId) => {
+    const res = await fetch(`${HABIT_URL}/create/${userId}`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(habitData),
@@ -29,8 +29,8 @@ export const createHabit = async (habitData, email) => {
     return data;
 };
 // ✅ Edit an existing habit
-export const editHabit = async (updatedHabitData, email) => {
-    const res = await fetch(`${HABIT_URL}/edit/${email}`, {
+export const editHabit = async (updatedHabitData, userId) => {
+    const res = await fetch(`${HABIT_URL}/edit/${userId}`, {
         method: "PUT",
         headers: getAuthHeaders(),
         body: JSON.stringify(updatedHabitData),
@@ -47,9 +47,8 @@ export const editHabit = async (updatedHabitData, email) => {
 };
 
 
-// ✅ Get all habits by user ID (faster backend query)
-export const getHabitsByUserId = async (userId) => {
-    const res = await fetch(`${HABIT_URL}/user/${userId}`, {
+export const getHabitsWithLogsByUserId = async (userId) => {
+    const res = await fetch(`${HABIT_URL}/habitsAndLogs/${userId}`, {
         method: "GET",
         headers: getAuthHeaders(),
     });
@@ -57,12 +56,13 @@ export const getHabitsByUserId = async (userId) => {
     const data = await res.json();
 
     if (!res.ok) {
-        const errorMsg = data.error || data.message || "Failed to fetch habits.";
+        const errorMsg = data.error || data.message || "Failed to fetch habits with logs.";
         throw new Error(errorMsg);
     }
 
     return data;
 };
+
 
 
 // ✅ Hard delete a habit by ID

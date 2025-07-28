@@ -3,7 +3,7 @@ import "../../styles/HabitOverviewGrid.css";
 import HabitCard from "./HabitCard";
 import { getLocalDateStr } from "../../utils/dateUtils";
 
-const HabitOverviewGrid = ({ habits, loading, email, setHabitsFromHabitOverview }) => {
+const HabitOverviewGrid = ({ habits, loading, user, setHabitsFromHabitOverview }) => {
     const localDateStr = getLocalDateStr();
 
     if (loading) {
@@ -29,7 +29,7 @@ const HabitOverviewGrid = ({ habits, loading, email, setHabitsFromHabitOverview 
                         <HabitCard
                             key={habit.id}
                             habit={habit}
-                            email={email}
+                            user={user}
                             setHabitsFromHabitCard={setHabitsFromHabitOverview}
                         />
                     ))

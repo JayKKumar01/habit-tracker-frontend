@@ -13,7 +13,7 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
     useEffect(() => {
         const fetchBio = async () => {
             try {
-                const profile = await getProfile(user.email);
+                const profile = await getProfile(user.userId);
                 setBio(profile.bio?.trim() || "No bio set");
                 setUserFromProfile((prev) => ({ ...prev, bio: profile.bio || "" }));
             } catch (err) {
@@ -26,13 +26,13 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
         } else {
             setBio(user.bio.trim() || "No bio set");
         }
-    }, [user.email, user.bio, setUserFromProfile]);
+    }, [user.userId, user.bio, setUserFromProfile]);
 
     const handleEditSubmit = async ({ name, bio }) => {
         setLoading(true);
         setError("");
         try {
-            await saveOrUpdateProfile(user.email, bio);
+            await saveOrUpdateProfile(user.userId, bio);
             setUserFromProfile((prevUser) => ({ ...prevUser, name, bio }));
             setBio(bio?.trim() || "No bio set");
             setIsEditing(false);
@@ -67,7 +67,7 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
 
                 <div className="user-info-content">
                     <p><strong>Name:</strong> {user.name}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
+                    <p><strong>Email:</strong> {user.userId}</p>
                     <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
                     <p>
                         <strong>Bio:</strong>{" "}

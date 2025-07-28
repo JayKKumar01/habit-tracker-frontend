@@ -3,7 +3,7 @@ import "../../styles/AddHabitButton.css";
 import HabitForm from "../habit/HabitForm";
 import {addHabitLocally} from "../state/habitState";
 
-const AddHabitButton = ({ email, setHabitsFromAddHabit }) => {
+const AddHabitButton = ({ userId, setHabitsFromAddHabit }) => {
     const [open, setOpen] = useState(false);
 
     const handleCreated = (newHabit) => {
@@ -24,7 +24,7 @@ const AddHabitButton = ({ email, setHabitsFromAddHabit }) => {
 
             {open && (
                 <HabitForm
-                    email={email}
+                    userId={userId}
                     onSuccess={handleCreated}
                     onClose={() => setOpen(false)}
                 />

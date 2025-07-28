@@ -13,7 +13,7 @@ const daysLong = [
     "FRIDAY", "SATURDAY", "SUNDAY"
 ];
 
-const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
+const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
     const localDateStr = getLocalDateStr();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false); // ✅ NEW
@@ -45,7 +45,7 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
         };
 
         fetchLogsAndSetStatus();
-    }, [habit, email]);
+    }, [habit, user.id]);
 
     useEffect(() => {
         if (todayIndex === null || weekStatus.length === 0) return;
@@ -63,7 +63,7 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
 
     const handleDelete = async () => {
         try {
-            const res = await deleteHabit(email, habit.id);
+            const res = await deleteHabit(user.id, habit.id);
             setHabitsFromHabitCard(prev =>
                 deleteHabitInList(prev, habit.id)
             );
@@ -82,7 +82,7 @@ const HabitCard = ({ habit, email, setHabitsFromHabitCard }) => {
             endDate: updates.endDate
         };
 
-        const res = await editHabit(updatedHabitData, email);
+        const res = await editHabit(updatedHabitData, user.id);
         console.log(res);
         setHabitsFromHabitCard((prev) =>
             updateHabitInList(prev, habit.id, updates)
