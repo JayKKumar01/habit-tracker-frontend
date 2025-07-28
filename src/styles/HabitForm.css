@@ -136,3 +136,50 @@
         transform: translateY(0);
     }
 }
+
+/* === Tag Container === */
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+/* === Tag Pill === */
+.tag-pill {
+    padding: 4px 10px;
+    background-color: rgba(0, 123, 255, 0.1); /* transparent blue */
+    color: #007bff;
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    border-radius: 8px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1.4;
+    transition: all 0.2s ease-in-out;
+}
+
+.tag-pill:hover {
+    background-color: rgba(0, 123, 255, 0.15);
+    border-color: rgba(0, 123, 255, 0.8);
+}
+
+/* === Tag Remove Button === */
+.tag-pill button {
+    margin-left: 6px;
+    background: transparent;
+    border: none;
+    color: #007bff;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.tag-pill button:hover {
+    color: #0056b3;
+}
+
+
