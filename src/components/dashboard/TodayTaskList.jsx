@@ -50,7 +50,7 @@ const TodayTaskList = ({ habits = [], loading, user, setHabitsFromChild }) => {
 
         try {
             // ✅ Send to server
-            await updateHabitLog(user.email, {
+            await updateHabitLog(user.id, {
                 habitId: id,
                 date: localDateStr,
                 completed: checked,

@@ -12,8 +12,8 @@ const getAuthHeaders = () => {
 };
 
 // ✅ Update or Create Habit Log
-export const updateHabitLog = async (email, habitLogData) => {
-    const res = await fetch(`${HABIT_LOG_URL}/update/${email}`, {
+export const updateHabitLog = async (userId, habitLogData) => {
+    const res = await fetch(`${HABIT_LOG_URL}/update/${userId}`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(habitLogData),
