@@ -13,7 +13,7 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
     useEffect(() => {
         const fetchBio = async () => {
             try {
-                const profile = await getProfile(user.userId);
+                const profile = await getProfile(user.id);
                 setBio(profile.bio?.trim() || "No bio set");
                 setUserFromProfile((prev) => ({ ...prev, bio: profile.bio || "" }));
             } catch (err) {
@@ -32,7 +32,7 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
         setLoading(true);
         setError("");
         try {
-            await saveOrUpdateProfile(user.userId, bio);
+            await saveOrUpdateProfile(user.id, bio);
             setUserFromProfile((prevUser) => ({ ...prevUser, name, bio }));
             setBio(bio?.trim() || "No bio set");
             setIsEditing(false);

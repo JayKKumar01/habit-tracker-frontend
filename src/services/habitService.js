@@ -29,7 +29,7 @@ export const createHabit = async (habitData, userId) => {
     return data;
 };
 // ✅ Edit an existing habit
-export const editHabit = async (updatedHabitData, userId) => {
+export const updateHabit = async (updatedHabitData, userId) => {
     const res = await fetch(`${HABIT_URL}/edit/${userId}`, {
         method: "PUT",
         headers: getAuthHeaders(),
@@ -65,14 +65,11 @@ export const getHabitsWithLogsByUserId = async (userId) => {
 
 
 
-// ✅ Hard delete a habit by ID
+// ✅ Hard delete a habit by ID via URL path
 export const deleteHabit = async (userId, habitId) => {
-    const res = await fetch(`${HABIT_URL}/delete/${userId}`, {
+    const res = await fetch(`${HABIT_URL}/delete/${userId}/${habitId}`, {
         method: "DELETE",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-            habitId,
-        }),
+        headers: getAuthHeaders(), // includes Authorization header etc.
     });
 
     const data = await res.json();
@@ -84,6 +81,7 @@ export const deleteHabit = async (userId, habitId) => {
 
     return data;
 };
+
 
 
 

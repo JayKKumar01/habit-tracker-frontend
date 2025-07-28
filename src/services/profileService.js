@@ -12,8 +12,8 @@ const getAuthHeaders = () => {
 };
 
 // ✅ Get profile by user email
-export const getProfile = async (email) => {
-    const res = await fetch(`${PROFILE_URL}/user/${email}`, {
+export const getProfile = async (userId) => {
+    const res = await fetch(`${PROFILE_URL}/user/${userId}`, {
         method: "GET",
         headers: getAuthHeaders(),
     });
@@ -29,8 +29,8 @@ export const getProfile = async (email) => {
 };
 
 // ✅ Save or update profile bio
-export const saveOrUpdateProfile = async (email, bio) => {
-    const res = await fetch(`${PROFILE_URL}/save/${email}`, {
+export const saveOrUpdateProfile = async (userId, bio) => {
+    const res = await fetch(`${PROFILE_URL}/save/${userId}`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ bio }),

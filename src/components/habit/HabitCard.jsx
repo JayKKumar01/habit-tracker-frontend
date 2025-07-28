@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
-import {deleteHabit, editHabit} from "../../services/habitService";
+import {deleteHabit, updateHabit} from "../../services/habitService";
 import { getCurrentWeekDates, getLocalDateStr } from "../../utils/dateUtils";
 import { Trash2, Pencil } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
@@ -82,7 +82,7 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
             endDate: updates.endDate
         };
 
-        const res = await editHabit(updatedHabitData, user.id);
+        const res = await updateHabit(updatedHabitData, user.id);
         console.log(res);
         setHabitsFromHabitCard((prev) =>
             updateHabitInList(prev, habit.id, updates)
