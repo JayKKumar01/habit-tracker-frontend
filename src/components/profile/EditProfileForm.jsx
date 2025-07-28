@@ -1,13 +1,29 @@
 import React, { useState } from "react";
 import "../../styles/EditProfileForm.css";
 
+const MAX_NAME_LENGTH = 13;
+
 const EditProfileForm = ({ user, onSubmit, onCancel, loading, error }) => {
     const [name, setName] = useState(user.name || "");
     const [bio, setBio] = useState(user.bio || "");
+    const [formError, setFormError] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({ name, bio });
+        const trimmedName = name.trim();
+
+        if (!trimmedName) {
+            setFormError("Name cannot be empty or just spaces.");
+            return;
+        }
+
+        if (trimmedName.length > MAX_NAME_LENGTH) {
+            setFormError("Name cannot be this long!");
+            return;
+        }
+
+        setFormError("");
+        onSubmit({ name: trimmedName, bio });
     };
 
     return (
@@ -22,6 +38,7 @@ const EditProfileForm = ({ user, onSubmit, onCancel, loading, error }) => {
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        maxLength={MAX_NAME_LENGTH + 10} // allow typing a bit more, but trim & validate before submit
                         required
                     />
                 </div>
@@ -37,7 +54,9 @@ const EditProfileForm = ({ user, onSubmit, onCancel, loading, error }) => {
                     />
                 </div>
 
-                {error && <p className="form-error">{error}</p>}
+                {(formError || error) && (
+                    <p className="form-error">{formError || error}</p>
+                )}
 
                 <div className="form-actions">
                     <button type="submit" disabled={loading}>
