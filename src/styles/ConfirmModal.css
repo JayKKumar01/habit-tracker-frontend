@@ -60,3 +60,9 @@
 .cancel-btn:hover {
     background-color: #d0d3d4;
 }
+
+.modal-error {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}

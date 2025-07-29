@@ -76,7 +76,7 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
                 setHabitsFromHabitCard(prev => deleteHabitInList(prev, habit.id));
                 console.log(res);
             } catch (error) {
-                alert("Failed to delete habit: " + error.message);
+                return "Failed to delete habit: " + error.message;
             }
         } else if (deleteMode === "tag" && selectedTagIndex !== null) {
             const updated = [...tags];
@@ -84,8 +84,7 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
             setTags(updated);
             setSelectedTagIndex(null);
         }
-
-        setModalOpen(false);
+        // return nothing or empty string = no error
     };
 
     const handleEditSubmit = async (updates) => {
@@ -119,10 +118,11 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
 
     const handleAddTagConfirm = async (newTag) => {
         const tag = newTag.trim().toLowerCase();
-        if (!tag || tags.includes(tag)) return;
+        if (!tag) return "Tag cannot be empty.";
+        if (tags.includes(tag)) return "This tag already exists.";
 
         setTags(prev => [...prev, tag]);
-        setInputModalOpen(false);
+        return ""; // No error
     };
 
     if (isEditing) {

@@ -13,13 +13,23 @@ const InputModal = ({
                     }) => {
     const [inputValue, setInputValue] = useState(initialValue);
     const [isProcessing, setProcessing] = useState(false);
+    const [error, setError] = useState("");
 
     if (!isOpen) return null;
 
     const handleConfirm = async () => {
         try {
             setProcessing(true);
-            await onConfirm(inputValue);
+            setError("");
+            const err = await onConfirm(inputValue.trim());
+            if (typeof err === "string" && err.length > 0) {
+                setError(err);
+            } else {
+                setInputValue("");
+                onClose(); // Close only if no error returned
+            }
+        } catch (e) {
+            setError(e.message || "Something went wrong.");
         } finally {
             setProcessing(false);
         }
@@ -37,6 +47,7 @@ const InputModal = ({
                     onChange={(e) => setInputValue(e.target.value)}
                     disabled={isProcessing}
                 />
+                {error && <p className="modal-error">{error}</p>}
                 <div className="modal-actions">
                     <button
                         className="confirm-btn"
