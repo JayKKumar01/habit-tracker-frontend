@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../../styles/HabitTags.css";
 import { Plus, Trash2 } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
 import InputModal from "../modals/InputModal";

@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/ConfirmModal.css";
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, message }) => {
     const [isProcessing, setProcessing] = useState(false);
     const [error, setError] = useState("");
 
+    // Reset error and processing state every time modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setError("");
+            setProcessing(false);
+        }
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleConfirm = async () => {
         try {
             setProcessing(true);
-            setError("");
-            const result = await onConfirm(); // Can return an error message
+            const result = await onConfirm(); // Can return an error string
             if (typeof result === "string" && result.length > 0) {
                 setError(result);
             } else {
