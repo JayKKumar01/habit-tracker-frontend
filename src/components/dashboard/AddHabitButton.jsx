@@ -7,21 +7,19 @@ const AddHabitButton = ({ userId, setHabitsFromAddHabit }) => {
     const [open, setOpen] = useState(false);
 
     const handleCreated = (newHabit) => {
-        newHabit.tags = [];
-        const tag = {habitId: newHabit.id, name: newHabit.frequency}
-        if (newHabit.frequency === "DAILY"){
-            tag.id = 1;
-        }else{
-            tag.id = 3;
-        }
-        newHabit.tags.push(tag);
+        newHabit.tags = [{
+            id: newHabit.frequency === "DAILY" ? 1 : 3,
+            habitId: newHabit.id,
+            name: newHabit.frequency
+        }];
+
         console.log("New habit created:", newHabit);
 
-        // Correctly update the local habit list using the state updater function
         setHabitsFromAddHabit(prev => addHabitLocally(prev, newHabit));
-
         setOpen(false);
     };
+
+
 
 
     return (
