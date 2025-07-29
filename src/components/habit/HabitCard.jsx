@@ -15,18 +15,9 @@ const daysLong = [
 ];
 const defaultTags = ["daily", "weekly", "focus", "mindset", "routine", "discipline", "wellness"];
 const themeTags = [
-    "mindfulness",
-    "productivity",
-    "health",
-    "focus",
-    "discipline",
-    "routine",
-    "fitness",
-    "gratitude",
-    "balance",
-    "consistency"
+    "mindfulness", "productivity", "health", "focus", "discipline",
+    "routine", "fitness", "gratitude", "balance", "consistency"
 ];
-
 
 const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
     const localDateStr = getLocalDateStr();
@@ -38,9 +29,8 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
     const [streak, setStreak] = useState(0);
     const [tags, setTags] = useState([]);
     const [selectedTagIndex, setSelectedTagIndex] = useState(null);
-    const [deleteMode, setDeleteMode] = useState("habit"); // "habit" | "tag"
-
-    const [inputModalOpen, setInputModalOpen] = useState(false); // for Add Tag
+    const [deleteMode, setDeleteMode] = useState("habit");
+    const [inputModalOpen, setInputModalOpen] = useState(false);
 
     useEffect(() => {
         const currentWeekDates = getCurrentWeekDates();
@@ -63,12 +53,21 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
         setWeekStatus(status);
         setTodayIndex(todayIdx);
 
-        const normalizedTags = Array.isArray(habit.tags) && habit.tags.length > 0
-            ? habit.tags.map(tag => tag.toLowerCase())
-            : defaultTags;
+        // ✅ Set default tags if needed and sync with parent state
+        let normalizedTags;
+        if (!Array.isArray(habit.tags) || habit.tags.length === 0) {
+            normalizedTags = defaultTags;
+            habit.tags = defaultTags;
+            setHabitsFromHabitCard(prev =>
+                updateHabitInList(prev, habit.id, { tags: defaultTags })
+            );
+        } else {
+            normalizedTags = habit.tags.map(tag => tag.toLowerCase());
+        }
 
         setTags(normalizedTags);
     }, [habit, user.id, localDateStr]);
+
 
     useEffect(() => {
         if (todayIndex === null || weekStatus.length === 0) return;
@@ -92,20 +91,27 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
                 return "Failed to delete habit: " + error.message;
             }
         } else if (deleteMode === "tag" && selectedTagIndex !== null) {
-            const tagToDelete = tags[selectedTagIndex];
-            if (tagToDelete.toLowerCase() === habit.frequency.toLowerCase()) {
-                return `Cannot delete tag "${tagToDelete}" because it matches the habit's frequency.`;
-            }
-
-            const updated = [...tags];
-            updated.splice(selectedTagIndex, 1);
-            setTags(updated);
-            setSelectedTagIndex(null);
+        const tagToDelete = tags[selectedTagIndex];
+        if (tagToDelete.toLowerCase() === habit.frequency.toLowerCase()) {
+            return `Cannot delete tag "${tagToDelete}" because it matches the habit's frequency.`;
         }
 
-        // return nothing or empty string = no error
-    };
+        const updated = [...tags];
+        updated.splice(selectedTagIndex, 1);
+        setTags(updated);
+        setSelectedTagIndex(null);
+        habit.tags = updated;
 
+        try {
+            // const res = await updateHabitTag({ habitId: habit.id, tags: updated });
+            // console.log(res);
+            setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
+        } catch (err) {
+            console.error("Failed to update tags:", err);
+        }
+    }
+
+};
 
     const handleEditSubmit = async (updates) => {
         const updatedData = {
@@ -142,9 +148,22 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
         if (tags.includes(tag)) return "This tag already exists.";
         if (tags.length >= 10) return "Maximum limit exceeded.";
 
-        setTags(prev => [...prev, tag]);
-        return ""; // No error
+        const updated = [...tags, tag];
+        setTags(updated);
+        habit.tags = updated;
+
+        try {
+            // const res = await updateHabitTag({ habitId: habit.id, tags: updated });
+            // console.log(res);
+            setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
+        } catch (err) {
+            console.error("Failed to update tags:", err);
+            return "Failed to update tags.";
+        }
+
+        return "";
     };
+
 
     if (isEditing) {
         return (
@@ -238,7 +257,6 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
                 placeholder="e.g., productivity"
                 suggestions={themeTags}
             />
-
         </div>
     );
 };
