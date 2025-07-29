@@ -7,6 +7,7 @@ import ConfirmModal from "../modals/ConfirmModal";
 import InputModal from "../modals/InputModal";
 import { updateHabitInList, deleteHabitInList } from "../state/habitState";
 import EditHabitForm from "./EditHabitForm";
+import {updateHabitTag} from "../../services/habitTagService";
 
 const daysShort = ["M", "T", "W", "T", "F", "S", "S"];
 const daysLong = [
@@ -103,8 +104,8 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
         habit.tags = updated;
 
         try {
-            // const res = await updateHabitTag({ habitId: habit.id, tags: updated });
-            // console.log(res);
+            const res = await updateHabitTag(user.id,{ habitId: habit.id, tags: updated });
+            console.log(res);
             setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
         } catch (err) {
             console.error("Failed to update tags:", err);
@@ -153,8 +154,8 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
         habit.tags = updated;
 
         try {
-            // const res = await updateHabitTag({ habitId: habit.id, tags: updated });
-            // console.log(res);
+            const res = await updateHabitTag(user.id,{ habitId: habit.id, tags: updated });
+            console.log(res);
             setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
         } catch (err) {
             console.error("Failed to update tags:", err);
