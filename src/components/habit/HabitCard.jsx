@@ -14,6 +14,19 @@ const daysLong = [
     "FRIDAY", "SATURDAY", "SUNDAY"
 ];
 const defaultTags = ["daily", "weekly", "focus", "mindset", "routine", "discipline", "wellness"];
+const themeTags = [
+    "mindfulness",
+    "productivity",
+    "health",
+    "focus",
+    "discipline",
+    "routine",
+    "fitness",
+    "gratitude",
+    "balance",
+    "consistency"
+];
+
 
 const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
     const localDateStr = getLocalDateStr();
@@ -220,9 +233,11 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
                 isOpen={inputModalOpen}
                 onClose={() => setInputModalOpen(false)}
                 onConfirm={handleAddTagConfirm}
-                message="Enter a new tag:"
+                title="Enter a new tag:"
                 placeholder="e.g., productivity"
+                suggestions={themeTags}
             />
+
         </div>
     );
 };

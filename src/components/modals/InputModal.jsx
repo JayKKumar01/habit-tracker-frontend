@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "../../styles/ConfirmModal.css"; // Reuses the same styles
+import React, { useState, useEffect } from "react";
+import "../../styles/InputModal.css";
 
 const InputModal = ({
                         isOpen,
@@ -10,10 +10,18 @@ const InputModal = ({
                         confirmText = "Confirm",
                         cancelText = "Cancel",
                         initialValue = "",
+                        suggestions = []
                     }) => {
     const [inputValue, setInputValue] = useState(initialValue);
     const [isProcessing, setProcessing] = useState(false);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        if (isOpen) {
+            setInputValue(initialValue);
+            setError("");
+        }
+    }, [isOpen, initialValue]);
 
     if (!isOpen) return null;
 
@@ -26,7 +34,7 @@ const InputModal = ({
                 setError(err);
             } else {
                 setInputValue("");
-                onClose(); // Close only if no error returned
+                onClose();
             }
         } catch (e) {
             setError(e.message || "Something went wrong.");
@@ -35,29 +43,48 @@ const InputModal = ({
         }
     };
 
+    const handleSuggestionClick = (tag) => {
+        setInputValue(tag);
+    };
+
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <p className="modal-message">{title}</p>
+        <div className="input-modal-overlay">
+            <div className="input-modal-content">
+                <p className="input-modal-message">{title}</p>
                 <input
                     type="text"
-                    className="modal-input"
+                    className="input-modal-input"
                     placeholder={placeholder}
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     disabled={isProcessing}
                 />
-                {error && <p className="modal-error">{error}</p>}
-                <div className="modal-actions">
+                {suggestions?.length > 0 && (
+                    <div className="input-modal-suggestions">
+                        {suggestions.map((tag, i) => (
+                            <button
+                                key={i}
+                                type="button"
+                                className={`input-suggestion-btn ${tag === inputValue.trim() ? "selected" : ""}`}
+                                onClick={() => handleSuggestionClick(tag)}
+                                disabled={isProcessing}
+                            >
+                                {tag}
+                            </button>
+                        ))}
+                    </div>
+                )}
+                {error && <p className="input-modal-error">{error}</p>}
+                <div className="input-modal-actions">
                     <button
-                        className="confirm-btn"
+                        className="input-confirm-btn"
                         onClick={handleConfirm}
                         disabled={isProcessing || !inputValue.trim()}
                     >
                         {isProcessing ? "Processing..." : confirmText}
                     </button>
                     <button
-                        className="cancel-btn"
+                        className="input-cancel-btn"
                         onClick={onClose}
                         disabled={isProcessing}
                     >
