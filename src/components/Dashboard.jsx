@@ -36,7 +36,6 @@ const Dashboard = ({ user: initialUser }) => {
 
             try {
                 const habitsWithEntities = await getHabitsWithLogsByUserId(user.id);
-
                 setHabits(habitsWithEntities);
             } catch (err) {
                 console.error("❌ Failed to load habits or logs:", err.message);
