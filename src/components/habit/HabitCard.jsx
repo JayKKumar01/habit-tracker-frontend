@@ -140,6 +140,7 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
         const tag = newTag.trim().toLowerCase();
         if (!tag) return "Tag cannot be empty.";
         if (tags.includes(tag)) return "This tag already exists.";
+        if (tags.length >= 10) return "Maximum limit exceeded.";
 
         setTags(prev => [...prev, tag]);
         return ""; // No error
