@@ -13,7 +13,7 @@ const daysLong = [
     "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
     "FRIDAY", "SATURDAY", "SUNDAY"
 ];
-const defaultTags = ["daily", "focus", "mindset", "routine", "discipline", "wellness"];
+const defaultTags = ["daily", "weekly", "focus", "mindset", "routine", "discipline", "wellness"];
 
 const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
     const localDateStr = getLocalDateStr();
@@ -79,13 +79,20 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
                 return "Failed to delete habit: " + error.message;
             }
         } else if (deleteMode === "tag" && selectedTagIndex !== null) {
+            const tagToDelete = tags[selectedTagIndex];
+            if (tagToDelete.toLowerCase() === habit.frequency.toLowerCase()) {
+                return `Cannot delete tag "${tagToDelete}" because it matches the habit's frequency.`;
+            }
+
             const updated = [...tags];
             updated.splice(selectedTagIndex, 1);
             setTags(updated);
             setSelectedTagIndex(null);
         }
+
         // return nothing or empty string = no error
     };
+
 
     const handleEditSubmit = async (updates) => {
         const updatedData = {
