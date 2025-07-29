@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
-import {deleteHabit, updateHabit} from "../../services/habitService";
+import { deleteHabit, updateHabit } from "../../services/habitService";
 import { getCurrentWeekDates, getLocalDateStr } from "../../utils/dateUtils";
-import { Trash2, Pencil } from "lucide-react";
+import { Trash2, Pencil, Plus } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
-import { updateHabitInList, deleteHabitInList} from "../state/habitState";
-import EditHabitForm from "./EditHabitForm"; // ✅ NEW
+import { updateHabitInList, deleteHabitInList } from "../state/habitState";
+import EditHabitForm from "./EditHabitForm";
 
 const daysShort = ["M", "T", "W", "T", "F", "S", "S"];
 const daysLong = [
@@ -16,13 +16,15 @@ const daysLong = [
 const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
     const localDateStr = getLocalDateStr();
     const [isModalOpen, setModalOpen] = useState(false);
-    const [isEditing, setIsEditing] = useState(false); // ✅ NEW
+    const [isEditing, setIsEditing] = useState(false);
     const [weekStatus, setWeekStatus] = useState([]);
     const [todayIndex, setTodayIndex] = useState(null);
     const [streak, setStreak] = useState(0);
+    const [tags, setTags] = useState([]);
+    const [selectedTagIndex, setSelectedTagIndex] = useState(null);
 
     useEffect(() => {
-        const fetchLogsAndSetStatus = async () => {
+        const updateCardData = async () => {
             const currentWeekDates = getCurrentWeekDates();
             const status = [];
             let todayIdx = null;
@@ -42,9 +44,16 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
 
             setWeekStatus(status);
             setTodayIndex(todayIdx);
+
+            const defaultTags = ["daily", "focus", "mindset", "routine", "discipline", "wellness"];
+            if (Array.isArray(habit.tags) && habit.tags.length > 0) {
+                setTags(habit.tags.map(tag => tag.toLowerCase()));
+            } else {
+                setTags(defaultTags);
+            }
         };
 
-        fetchLogsAndSetStatus();
+        updateCardData();
     }, [habit, user.id]);
 
     useEffect(() => {
@@ -64,9 +73,7 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
     const handleDelete = async () => {
         try {
             const res = await deleteHabit(user.id, habit.id);
-            setHabitsFromHabitCard(prev =>
-                deleteHabitInList(prev, habit.id)
-            );
+            setHabitsFromHabitCard(prev => deleteHabitInList(prev, habit.id));
             console.log(res);
             setModalOpen(false);
         } catch (error) {
@@ -84,13 +91,31 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
 
         const res = await updateHabit(updatedHabitData, user.id);
         console.log(res);
-        setHabitsFromHabitCard((prev) =>
-            updateHabitInList(prev, habit.id, updates)
-        );
-
+        setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, updates));
         setIsEditing(false);
     };
 
+    const handleAddTagClick = () => {
+        // TODO: implement add tag flow
+        console.log("Add tag");
+    };
+
+    const handleDeleteTagClick = () => {
+        if (selectedTagIndex !== null) {
+            const updatedTags = [...tags];
+            updatedTags.splice(selectedTagIndex, 1);
+            setTags(updatedTags);
+            setSelectedTagIndex(null);
+        }
+    };
+
+    const handleTagClick = (index) => {
+        if (selectedTagIndex === index) {
+            setSelectedTagIndex(null); // Deselect if same tag tapped
+        } else {
+            setSelectedTagIndex(index);
+        }
+    };
 
     if (isEditing) {
         return (
@@ -116,6 +141,35 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
             {habit.description && <p className="habit-description">{habit.description}</p>}
             <p><strong>Frequency:</strong> {habit.frequency}</p>
             <p><strong>Streak:</strong> {streak} 🔥</p>
+
+            <div className="tags-section">
+                <div className="tags-header">
+                    <p className="tags-label">Tags:</p>
+                    {selectedTagIndex === null ? (
+                        <button className="tag-action-btn" onClick={handleAddTagClick}>
+                            <Plus size={16} />
+                        </button>
+                    ) : (
+                        <button className="tag-action-btn" onClick={handleDeleteTagClick}>
+                            <Trash2 size={16} />
+                        </button>
+                    )}
+                </div>
+
+                <div className="habit-tags-scroll">
+                    <div className="habit-tags-inner">
+                        {tags.map((tag, index) => (
+                            <span
+                                key={index}
+                                className={`habit-tag ${selectedTagIndex === index ? "selected" : ""}`}
+                                onClick={() => handleTagClick(index)}
+                            >
+                {tag}
+              </span>
+                        ))}
+                    </div>
+                </div>
+            </div>
 
             <div className="weekly-tracker">
                 {daysShort.map((day, idx) => (
