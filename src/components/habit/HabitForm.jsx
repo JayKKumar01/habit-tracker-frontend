@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
-import {createHabit} from "../../services/habitService";
-import {daysOfWeek, getLocalDateStr} from "../../utils/dateUtils";
+import React, { useState } from "react";
+import { createHabit } from "../../services/habitService";
+import { daysOfWeek, getLocalDateStr } from "../../utils/dateUtils";
 import "../../styles/HabitForm.css";
 
-const HabitForm = ({userId, onSuccess, onClose}) => {
+const HabitForm = ({ userId, onSuccess, onClose }) => {
     const localDateStr = getLocalDateStr();
 
     const [title, setTitle] = useState("");
@@ -11,19 +11,9 @@ const HabitForm = ({userId, onSuccess, onClose}) => {
     const [frequency, setFrequency] = useState("DAILY");
     const [targetDays, setTargetDays] = useState(new Set());
     const [startDate, setStartDate] = useState(localDateStr);
-    const [tags, setTags] = useState([]);
-    const [tagInput, setTagInput] = useState("");
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (tags.length >= 5) {
-            setError("You can only add up to 5 tags.");
-        } else if (error === "You can only add up to 5 tags.") {
-            setError(""); // clear tag limit error if back under limit
-        }
-    }, [tags, error]);
 
     const resetForm = () => {
         setTitle("");
@@ -31,8 +21,6 @@ const HabitForm = ({userId, onSuccess, onClose}) => {
         setFrequency("DAILY");
         setTargetDays(new Set());
         setStartDate(localDateStr);
-        setTags([]);
-        setTagInput("");
         setError("");
         setLoading(false);
     };
@@ -43,23 +31,6 @@ const HabitForm = ({userId, onSuccess, onClose}) => {
             updated.has(day) ? updated.delete(day) : updated.add(day);
             return updated;
         });
-    };
-
-    const handleTagKeyDown = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            const trimmed = tagInput.trim();
-            if (!trimmed || tags.includes(trimmed) || tags.length >= 5) return;
-
-            setTags([...tags, trimmed]);
-            setTagInput("");
-        }
-    };
-
-
-
-    const removeTag = (tagToRemove) => {
-        setTags(tags.filter(tag => tag !== tagToRemove));
     };
 
     const handleSubmit = async (e) => {
@@ -105,7 +76,6 @@ const HabitForm = ({userId, onSuccess, onClose}) => {
                 ? [...daysOfWeek]
                 : Array.from(targetDays),
             startDate,
-            tags, // ✅ include tag names
         };
 
         try {
@@ -181,26 +151,6 @@ const HabitForm = ({userId, onSuccess, onClose}) => {
                         min={localDateStr}
                         required
                     />
-
-                    {/* ✅ Tag input UI */}
-                    <label>Tags</label>
-                    <input
-                        type="text"
-                        placeholder="Add tag and press Enter"
-                        value={tagInput}
-                        onChange={(e) => setTagInput(e.target.value)}
-                        onKeyDown={handleTagKeyDown}
-                        disabled={tags.length >= 5}
-                    />
-                    <div className="tag-container">
-                        {tags.map((tag) => (
-                            <span key={tag} className="tag-pill">
-                                {tag}
-                                <button type="button" onClick={() => removeTag(tag)}>×</button>
-                            </span>
-                        ))}
-                    </div>
-
 
                     <div className="form-buttons">
                         <button type="submit" disabled={loading}>
