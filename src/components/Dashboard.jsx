@@ -35,8 +35,9 @@ const Dashboard = ({ user: initialUser }) => {
             const totalStart = performance.now();
 
             try {
-                const habitsWithLogs = await getHabitsWithLogsByUserId(user.id);
-                setHabits(habitsWithLogs);
+                const habitsWithEntities = await getHabitsWithLogsByUserId(user.id);
+
+                setHabits(habitsWithEntities);
             } catch (err) {
                 console.error("❌ Failed to load habits or logs:", err.message);
                 setHabits([]);

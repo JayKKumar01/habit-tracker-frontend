@@ -7,14 +7,13 @@ import ConfirmModal from "../modals/ConfirmModal";
 import InputModal from "../modals/InputModal";
 import { updateHabitInList, deleteHabitInList } from "../state/habitState";
 import EditHabitForm from "./EditHabitForm";
-import {updateHabitTag} from "../../services/habitTagService";
+import { addHabitTag, removeHabitTag } from "../../services/tagService";
 
 const daysShort = ["M", "T", "W", "T", "F", "S", "S"];
 const daysLong = [
     "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
     "FRIDAY", "SATURDAY", "SUNDAY"
 ];
-const defaultTags = ["daily", "weekly", "focus", "mindset", "routine", "discipline", "wellness"];
 const themeTags = [
     "mindfulness", "productivity", "health", "focus", "discipline",
     "routine", "fitness", "gratitude", "balance", "consistency"
@@ -53,22 +52,8 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
 
         setWeekStatus(status);
         setTodayIndex(todayIdx);
-
-        // ✅ Set default tags if needed and sync with parent state
-        let normalizedTags;
-        if (!Array.isArray(habit.tags) || habit.tags.length === 0) {
-            normalizedTags = defaultTags;
-            habit.tags = defaultTags;
-            setHabitsFromHabitCard(prev =>
-                updateHabitInList(prev, habit.id, { tags: defaultTags })
-            );
-        } else {
-            normalizedTags = habit.tags.map(tag => tag.toLowerCase());
-        }
-
-        setTags(normalizedTags);
+        if (Array.isArray(habit.tags)) setTags(habit.tags);
     }, [habit, user.id, localDateStr]);
-
 
     useEffect(() => {
         if (todayIndex === null || weekStatus.length === 0) return;
@@ -92,27 +77,24 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
                 return "Failed to delete habit: " + error.message;
             }
         } else if (deleteMode === "tag" && selectedTagIndex !== null) {
-        const tagToDelete = tags[selectedTagIndex];
-        if (tagToDelete.toLowerCase() === habit.frequency.toLowerCase()) {
-            return `Cannot delete tag "${tagToDelete}" because it matches the habit's frequency.`;
+            const tagToDelete = tags[selectedTagIndex];
+            if (tagToDelete.name.toLowerCase() === habit.frequency.toLowerCase()) {
+                return `Cannot delete tag "${tagToDelete.name}" because it matches the habit's frequency.`;
+            }
+
+            const updated = [...tags];
+            updated.splice(selectedTagIndex, 1);
+            setSelectedTagIndex(null);
+
+            try {
+                // const res = await removeHabitTag(user.id, tagToDelete);
+                // console.log(res);
+                setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
+            } catch (err) {
+                console.error("Failed to update tags:", err);
+            }
         }
-
-        const updated = [...tags];
-        updated.splice(selectedTagIndex, 1);
-        setTags(updated);
-        setSelectedTagIndex(null);
-        habit.tags = updated;
-
-        try {
-            const res = await updateHabitTag(user.id,{ habitId: habit.id, tags: updated });
-            console.log(res);
-            setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
-        } catch (err) {
-            console.error("Failed to update tags:", err);
-        }
-    }
-
-};
+    };
 
     const handleEditSubmit = async (updates) => {
         const updatedData = {
@@ -143,19 +125,18 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
         }
     };
 
-    const handleAddTagConfirm = async (newTag) => {
-        const tag = newTag.trim().toLowerCase();
-        if (!tag) return "Tag cannot be empty.";
-        if (tags.includes(tag)) return "This tag already exists.";
+    const handleAddTagConfirm = async (newTagName) => {
+        const tagName = newTagName.trim().toLowerCase();
+        if (!tagName) return "Tag cannot be empty.";
+        if (tags.some(tag => tag.name.toLowerCase() === tagName)) return "This tag already exists.";
         if (tags.length >= 10) return "Maximum limit exceeded.";
 
-        const updated = [...tags, tag];
-        setTags(updated);
-        habit.tags = updated;
+        const newTag = { id: null, name: tagName, habitId: habit.id };
+        const updated = [...tags, newTag];
 
         try {
-            const res = await updateHabitTag(user.id,{ habitId: habit.id, tags: updated });
-            console.log(res);
+            // const res = await addHabitTag(user.id, newTag);
+            // console.log(res);
             setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
         } catch (err) {
             console.error("Failed to update tags:", err);
@@ -164,7 +145,6 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
 
         return "";
     };
-
 
     if (isEditing) {
         return (
@@ -219,8 +199,8 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
                                 className={`habit-tag ${selectedTagIndex === index ? "selected" : ""}`}
                                 onClick={() => handleTagClick(index)}
                             >
-                                {tag}
-                            </span>
+                {tag.name}
+              </span>
                         ))}
                     </div>
                 </div>
@@ -245,7 +225,7 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
                     deleteMode === "habit"
                         ? `Delete habit "${habit.title}"?`
                         : selectedTagIndex !== null
-                            ? `Delete tag "${tags[selectedTagIndex]}"?`
+                            ? `Delete tag "${tags[selectedTagIndex].name}"?`
                             : "Delete selected tag?"
                 }
             />
