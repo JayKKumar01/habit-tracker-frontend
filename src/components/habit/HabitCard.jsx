@@ -2,35 +2,26 @@ import React, { useEffect, useState } from "react";
 import "../../styles/HabitCard.css";
 import { deleteHabit, updateHabit } from "../../services/habitService";
 import { getCurrentWeekDates, getLocalDateStr } from "../../utils/dateUtils";
-import { Trash2, Pencil, Plus } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
-import InputModal from "../modals/InputModal";
 import { updateHabitInList, deleteHabitInList } from "../state/habitState";
 import EditHabitForm from "./EditHabitForm";
-import { addHabitTag, removeHabitTag } from "../../services/tagService";
+import HabitTags from "./HabitTags";
 
 const daysShort = ["M", "T", "W", "T", "F", "S", "S"];
 const daysLong = [
     "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
     "FRIDAY", "SATURDAY", "SUNDAY"
 ];
-const themeTags = [
-    "mindfulness", "productivity", "health", "focus", "discipline",
-    "routine", "fitness", "gratitude", "balance", "consistency"
-];
 
 const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
     const localDateStr = getLocalDateStr();
 
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [isDeleteHabitOpen, setIsDeleteHabitOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [weekStatus, setWeekStatus] = useState([]);
     const [todayIndex, setTodayIndex] = useState(null);
     const [streak, setStreak] = useState(0);
-    const [tags, setTags] = useState([]);
-    const [selectedTagIndex, setSelectedTagIndex] = useState(null);
-    const [deleteMode, setDeleteMode] = useState("habit");
-    const [inputModalOpen, setInputModalOpen] = useState(false);
 
     useEffect(() => {
         const currentWeekDates = getCurrentWeekDates();
@@ -52,8 +43,7 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
 
         setWeekStatus(status);
         setTodayIndex(todayIdx);
-        if (Array.isArray(habit.tags)) setTags(habit.tags);
-    }, [habit, user.id, localDateStr]);
+    }, [habit, localDateStr]);
 
     useEffect(() => {
         if (todayIndex === null || weekStatus.length === 0) return;
@@ -67,32 +57,13 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
         setStreak(count);
     }, [habit, todayIndex, weekStatus]);
 
-    const handleDelete = async () => {
-        if (deleteMode === "habit") {
-            try {
-                const res = await deleteHabit(user.id, habit.id);
-                setHabitsFromHabitCard(prev => deleteHabitInList(prev, habit.id));
-                console.log(res);
-            } catch (error) {
-                return "Failed to delete habit: " + error.message;
-            }
-        } else if (deleteMode === "tag" && selectedTagIndex !== null) {
-            const tagToDelete = tags[selectedTagIndex];
-            if (tagToDelete.name.toLowerCase() === habit.frequency.toLowerCase()) {
-                return `Cannot delete tag "${tagToDelete.name}" because it matches the habit's frequency.`;
-            }
-
-            const updated = [...tags];
-            updated.splice(selectedTagIndex, 1);
-            setSelectedTagIndex(null);
-
-            try {
-                // const res = await removeHabitTag(user.id, tagToDelete);
-                // console.log(res);
-                setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
-            } catch (err) {
-                console.error("Failed to update tags:", err);
-            }
+    const handleHabitDelete = async () => {
+        try {
+            const res = await deleteHabit(user.id, habit.id);
+            setHabitsFromHabitCard(prev => deleteHabitInList(prev, habit.id));
+            console.log(res);
+        } catch (error) {
+            return "Failed to delete habit: " + error.message;
         }
     };
 
@@ -110,40 +81,8 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
         setIsEditing(false);
     };
 
-    const handleTagClick = (index) => {
-        setSelectedTagIndex(prev => (prev === index ? null : index));
-    };
-
-    const handleAddTagClick = () => {
-        setInputModalOpen(true);
-    };
-
-    const handleDeleteTagRequest = () => {
-        if (selectedTagIndex !== null) {
-            setDeleteMode("tag");
-            setModalOpen(true);
-        }
-    };
-
-    const handleAddTagConfirm = async (newTagName) => {
-        const tagName = newTagName.trim().toLowerCase();
-        if (!tagName) return "Tag cannot be empty.";
-        if (tags.some(tag => tag.name.toLowerCase() === tagName)) return "This tag already exists.";
-        if (tags.length >= 10) return "Maximum limit exceeded.";
-
-        const newTag = { id: null, name: tagName, habitId: habit.id };
-        const updated = [...tags, newTag];
-
-        try {
-            // const res = await addHabitTag(user.id, newTag);
-            // console.log(res);
-            setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: updated }));
-        } catch (err) {
-            console.error("Failed to update tags:", err);
-            return "Failed to update tags.";
-        }
-
-        return "";
+    const handleTagsChange = (newTags) => {
+        setHabitsFromHabitCard(prev => updateHabitInList(prev, habit.id, { tags: newTags }));
     };
 
     if (isEditing) {
@@ -164,47 +103,19 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
 
             <button
                 className="delete-btn"
-                onClick={() => {
-                    setDeleteMode("habit");
-                    setModalOpen(true);
-                }}
+                onClick={() => setIsDeleteHabitOpen(true)}
             >
                 <Trash2 size={18} color="#e74c3c" strokeWidth={2} />
             </button>
 
             <h3>{habit.title}</h3>
-            {habit.description && <p className="habit-description">{habit.description}</p>}
+            {habit.description && (
+                <p className="habit-description">{habit.description}</p>
+            )}
             <p><strong>Frequency:</strong> {habit.frequency}</p>
             <p><strong>Streak:</strong> {streak} 🔥</p>
 
-            <div className="tags-section">
-                <div className="tags-header">
-                    <p className="tags-label">Tags:</p>
-                    {selectedTagIndex === null ? (
-                        <button className="tag-action-btn" onClick={handleAddTagClick}>
-                            <Plus size={16} />
-                        </button>
-                    ) : (
-                        <button className="tag-action-btn" onClick={handleDeleteTagRequest}>
-                            <Trash2 size={16} />
-                        </button>
-                    )}
-                </div>
-
-                <div className="habit-tags-scroll">
-                    <div className="habit-tags-inner">
-                        {tags.map((tag, index) => (
-                            <span
-                                key={index}
-                                className={`habit-tag ${selectedTagIndex === index ? "selected" : ""}`}
-                                onClick={() => handleTagClick(index)}
-                            >
-                {tag.name}
-              </span>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <HabitTags user={user} habit={habit} onChange={handleTagsChange} />
 
             <div className="weekly-tracker">
                 {daysShort.map((day, idx) => (
@@ -218,25 +129,10 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
             </div>
 
             <ConfirmModal
-                isOpen={isModalOpen}
-                onClose={() => setModalOpen(false)}
-                onConfirm={handleDelete}
-                message={
-                    deleteMode === "habit"
-                        ? `Delete habit "${habit.title}"?`
-                        : selectedTagIndex !== null
-                            ? `Delete tag "${tags[selectedTagIndex].name}"?`
-                            : "Delete selected tag?"
-                }
-            />
-
-            <InputModal
-                isOpen={inputModalOpen}
-                onClose={() => setInputModalOpen(false)}
-                onConfirm={handleAddTagConfirm}
-                title="Enter a new tag:"
-                placeholder="e.g., productivity"
-                suggestions={themeTags}
+                isOpen={isDeleteHabitOpen}
+                onClose={() => setIsDeleteHabitOpen(false)}
+                onConfirm={handleHabitDelete}
+                message={`Delete habit "${habit.title}"?`}
             />
         </div>
     );
