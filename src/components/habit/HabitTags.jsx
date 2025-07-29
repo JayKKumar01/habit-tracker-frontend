@@ -3,7 +3,7 @@ import "../../styles/HabitTags.css";
 import { Plus, Trash2 } from "lucide-react";
 import ConfirmModal from "../modals/ConfirmModal";
 import InputModal from "../modals/InputModal";
-// import { addHabitTag, removeHabitTag } from "../../services/tagService";
+import { addHabitTag, removeHabitTag } from "../../services/tagService";
 
 const themeTags = [
     "mindfulness",
@@ -45,8 +45,8 @@ const HabitTags = ({ user, habit, onChange }) => {
         const updated = [...tags, newTag];
 
         try {
-            // const res = await addHabitTag(user.id, newTag);
-            // console.log(res);
+            const res = await addHabitTag(user.id, newTag);
+            console.log(res);
             onChange(updated);
         } catch (err) {
             console.error("Failed to update tags:", err);

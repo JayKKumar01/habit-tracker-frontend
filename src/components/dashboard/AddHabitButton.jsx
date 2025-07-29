@@ -7,11 +7,6 @@ const AddHabitButton = ({ userId, setHabitsFromAddHabit }) => {
     const [open, setOpen] = useState(false);
 
     const handleCreated = (newHabit) => {
-        newHabit.tags = [{
-            id: newHabit.frequency === "DAILY" ? 1 : 3,
-            habitId: newHabit.id,
-            name: newHabit.frequency
-        }];
 
         console.log("New habit created:", newHabit);
 
