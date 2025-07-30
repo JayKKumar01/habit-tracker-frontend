@@ -16,7 +16,6 @@ const UserInfoCard = ({ user, setUserFromProfile }) => {
         const fetchProfile = async () => {
             try {
                 const profile = await getProfile(user.id);
-                console.log("Fetched profile:", profile);
 
                 if (profile && typeof profile === "object") {
                     setUserFromProfile((prev) => ({ ...prev, profile }));

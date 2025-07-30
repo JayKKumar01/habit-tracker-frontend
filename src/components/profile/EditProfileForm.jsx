@@ -5,7 +5,7 @@ const MAX_NAME_LENGTH = 13;
 
 const EditProfileForm = ({ user, onSubmit, onCancel, loading, error }) => {
     const [name, setName] = useState(user.name || "");
-    const [bio, setBio] = useState(user.bio || "");
+    const [bio, setBio] = useState(user?.profile?.bio || "");
     const [formError, setFormError] = useState("");
 
     const handleSubmit = (e) => {
