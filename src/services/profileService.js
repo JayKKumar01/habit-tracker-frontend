@@ -18,10 +18,15 @@ export const getProfile = async (userId) => {
         headers: getAuthHeaders(),
     });
 
-    const data = await res.json();
+    // Check for empty body
+    const isJson = res.headers
+        .get("content-type")
+        ?.includes("application/json");
+
+    const data = isJson ? await res.json() : null;
 
     if (!res.ok) {
-        const errorMsg = data.error || data.message || "Failed to fetch profile.";
+        const errorMsg = data?.error || data?.message || "Failed to fetch profile.";
         throw new Error(errorMsg);
     }
 
