@@ -6,34 +6,28 @@ import InputModal from "../modals/InputModal";
 import { addHabitTag, removeHabitTag } from "../../services/tagService";
 
 const themeTags = [
-    "mindfulness",
-    "productivity",
-    "health",
-    "focus",
-    "discipline",
-    "routine",
-    "fitness",
-    "gratitude",
-    "balance",
-    "consistency",
+    "mindfulness", "productivity", "health", "focus", "discipline",
+    "routine", "fitness", "gratitude", "balance", "consistency"
 ];
 
 const HabitTags = ({ user, habit, onChange }) => {
-    const [selectedTagIndex, setSelectedTagIndex] = useState(null);
+    const [selectedTagId, setSelectedTagId] = useState(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isInputOpen, setIsInputOpen] = useState(false);
 
     const tags = Array.isArray(habit.tags) ? habit.tags : [];
+    const sortedTags = [...tags].sort((a, b) => a.id - b.id);
 
-    const handleTagClick = (index) => {
-        setSelectedTagIndex(prev => (prev === index ? null : index));
-    };
+    const selectedTag = sortedTags.find(tag => tag.id === selectedTagId);
 
-    const requestDeleteSelected = () => {
-        if (selectedTagIndex !== null) setIsConfirmOpen(true);
+    const handleTagClick = (tagId) => {
+        setSelectedTagId(prev => (prev === tagId ? null : tagId));
     };
 
     const openAddModal = () => setIsInputOpen(true);
+    const requestDeleteSelected = () => {
+        if (selectedTagId !== null) setIsConfirmOpen(true);
+    };
 
     const handleAddTagConfirm = async (newTagName) => {
         const tagName = (newTagName || "").trim().toLowerCase();
@@ -43,35 +37,35 @@ const HabitTags = ({ user, habit, onChange }) => {
 
         try {
             const addedTag = await addHabitTag(user.id, { habitId: habit.id, name: tagName });
-            console.log("✅ Tag successfully added:", addedTag);
 
-            const updated = [...tags, addedTag];
-            onChange(updated);
+            if (!addedTag?.id || !addedTag?.name) return "Invalid tag received from server.";
+
+            console.log("✅ Tag successfully added:", addedTag);
+            onChange([...tags, addedTag]);
         } catch (err) {
-            console.error("Failed to update tags:", err);
-            return "Failed to update tags.";
+            console.error("❌ Failed to add tag:", err);
+            return "Failed to add tag.";
         }
 
         return "";
     };
 
     const handleDeleteSelected = async () => {
-        if (selectedTagIndex === null) return;
+        if (!selectedTag) return;
 
-        const tagToDelete = tags[selectedTagIndex];
-        if (tagToDelete.name.toLowerCase() === habit.frequency.toLowerCase()) {
-            return `Cannot delete tag "${tagToDelete.name}" because it matches the habit's frequency.`;
+        const isFreqTag = selectedTag.name.toLowerCase() === habit.frequency.toLowerCase();
+        if (isFreqTag) {
+            return `Cannot delete tag "${selectedTag.name}" as it matches habit's frequency.`;
         }
 
-        const updated = tags.slice(0, selectedTagIndex).concat(tags.slice(selectedTagIndex + 1));
-
         try {
-            const res = await removeHabitTag(user.id, tagToDelete);
-            console.log(res);
-            onChange(updated);
-            setSelectedTagIndex(null);
+            await removeHabitTag(user.id, { habitId: habit.id, tagId: selectedTag.id });
+            console.log("🗑️ Tag removed:", selectedTag);
+
+            onChange(tags.filter(tag => tag.id !== selectedTag.id));
+            setSelectedTagId(null);
         } catch (err) {
-            console.error("Failed to delete tag:", err);
+            console.error("❌ Failed to delete tag:", err);
             return "Failed to delete tag.";
         }
     };
@@ -80,27 +74,24 @@ const HabitTags = ({ user, habit, onChange }) => {
         <div className="tags-section">
             <div className="tags-header">
                 <p className="tags-label">Tags:</p>
-                {selectedTagIndex === null ? (
-                    <button className="tag-action-btn" onClick={openAddModal}>
-                        <Plus size={16} />
-                    </button>
-                ) : (
-                    <button className="tag-action-btn" onClick={requestDeleteSelected}>
-                        <Trash2 size={16} />
-                    </button>
-                )}
+                <button
+                    className="tag-action-btn"
+                    onClick={selectedTagId === null ? openAddModal : requestDeleteSelected}
+                >
+                    {selectedTagId === null ? <Plus size={16} /> : <Trash2 size={16} />}
+                </button>
             </div>
 
             <div className="habit-tags-scroll">
                 <div className="habit-tags-inner">
-                    {tags.map((tag, index) => (
+                    {sortedTags.map(tag => (
                         <span
-                            key={`${tag.id ?? "new"}-${tag.name}-${index}`}
-                            className={`habit-tag ${selectedTagIndex === index ? "selected" : ""}`}
-                            onClick={() => handleTagClick(index)}
+                            key={tag.id}
+                            className={`habit-tag ${selectedTagId === tag.id ? "selected" : ""}`}
+                            onClick={() => handleTagClick(tag.id)}
                         >
-              {tag.name}
-            </span>
+                            {tag.name}
+                        </span>
                     ))}
                 </div>
             </div>
@@ -110,8 +101,8 @@ const HabitTags = ({ user, habit, onChange }) => {
                 onClose={() => setIsConfirmOpen(false)}
                 onConfirm={handleDeleteSelected}
                 message={
-                    selectedTagIndex !== null
-                        ? `Delete tag "${tags[selectedTagIndex].name}"?`
+                    selectedTag
+                        ? `Delete tag "${selectedTag.name}"?`
                         : "Delete selected tag?"
                 }
             />

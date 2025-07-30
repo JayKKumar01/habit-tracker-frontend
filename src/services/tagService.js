@@ -10,7 +10,6 @@ const getAuthHeaders = () => {
         "Content-Type": "application/json",
     };
 };
-//await updateHabitTag({ habitId: habit.id, tags: updated });
 
 export const addHabitTag = async (userId, tagData) => {
     const res = await fetch(`${TAG_URL}/add-habit-tag/${userId}`, {

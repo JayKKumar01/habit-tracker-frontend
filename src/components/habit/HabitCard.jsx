@@ -43,7 +43,7 @@ const HabitCard = ({ habit, user, setHabitsFromHabitCard }) => {
 
         setWeekStatus(status);
         setTodayIndex(todayIdx);
-    }, [habit, localDateStr]);
+    }, [habit, habit.tags, localDateStr]);
 
     useEffect(() => {
         if (todayIndex === null || weekStatus.length === 0) return;
