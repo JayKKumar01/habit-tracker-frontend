@@ -7,11 +7,11 @@ const AuthLink = ({ type }) => {
         <p className="auth-link">
             {type === "login" ? (
                 <>
-                    Already have an account? <Link to="/login">Log in</Link>
+                    Already have an account? <Link to="/">Log in</Link>
                 </>
             ) : (
                 <>
-                    Don't have an account? <Link to="/">Sign up</Link>
+                    Don't have an account? <Link to="/signup">Sign up</Link>
                 </>
             )}
         </p>

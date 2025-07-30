@@ -59,7 +59,7 @@ const Dashboard = ({ user: initialUser }) => {
                 token={token}
                 onExpire={() => {
                     localStorage.clear();
-                    navigate("/login");
+                    navigate("/");
                 }}
             />
 

@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children }) => {
     }, []);
 
     if (authorizedUser === null) return <p>Loading...</p>;
-    if (authorizedUser === false) return <Navigate to="/login" />;
+    if (authorizedUser === false) return <Navigate to="/" />;
 
     return children(authorizedUser); // children must be a function that receives the user
 };

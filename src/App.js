@@ -15,21 +15,21 @@ function App() {
                 path="/"
                 element={
                     <div className="container">
-                        <h1>Habit Tracker - Signup</h1>
-                        <SignupForm />
-                        <AuthLink type="login" />
+                        <h1>Habit Tracker - Login</h1>
+                        <LoginForm />
+                        <AuthLink type="signup" />
                     </div>
                 }
             />
 
             {/* Login Page */}
             <Route
-                path="/login"
+                path="/signup"
                 element={
                     <div className="container">
-                        <h1>Habit Tracker - Login</h1>
-                        <LoginForm />
-                        <AuthLink type="signup" />
+                        <h1>Habit Tracker - Signup</h1>
+                        <SignupForm />
+                        <AuthLink type="login" />
                     </div>
                 }
             />

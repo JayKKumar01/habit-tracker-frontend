@@ -48,7 +48,7 @@ export const updateHabit = async (updatedHabitData, userId) => {
 
 
 export const getHabitsWithLogsByUserId = async (userId) => {
-    const res = await fetch(`${HABIT_URL}/habitsAndLogs/${userId}`, {
+    const res = await fetch(`${HABIT_URL}/habits/${userId}`, {
         method: "GET",
         headers: getAuthHeaders(),
     });
