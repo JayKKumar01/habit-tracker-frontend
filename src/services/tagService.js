@@ -1,6 +1,6 @@
 import BASE_API_URL from "../config/config";
 
-const TAG_URL = `${BASE_API_URL}/tag`;
+const TAG_URL = `${BASE_API_URL}/tags`;
 
 // Get token from localStorage helper
 const getAuthHeaders = () => {
@@ -12,11 +12,11 @@ const getAuthHeaders = () => {
 };
 //await updateHabitTag({ habitId: habit.id, tags: updated });
 
-export const addHabitTag = async (userId, tag) => {
+export const addHabitTag = async (userId, tagData) => {
     const res = await fetch(`${TAG_URL}/add-habit-tag/${userId}`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify(tag),
+        body: JSON.stringify(tagData),
     });
 
     const data = await res.json();
@@ -28,11 +28,11 @@ export const addHabitTag = async (userId, tag) => {
 
     return data;
 }
-export const removeHabitTag = async (userId, tag) => {
+export const removeHabitTag = async (userId, tagData) => {
     const res = await fetch(`${TAG_URL}/remove-habit-tag/${userId}`, {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify(tag),
+        body: JSON.stringify(tagData),
     });
 
     const data = await res.json();

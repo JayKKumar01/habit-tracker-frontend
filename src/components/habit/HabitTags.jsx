@@ -41,12 +41,11 @@ const HabitTags = ({ user, habit, onChange }) => {
         if (tags.some(tag => tag.name.toLowerCase() === tagName)) return "This tag already exists.";
         if (tags.length >= 10) return "Maximum limit exceeded.";
 
-        const newTag = { id: null, name: tagName, habitId: habit.id };
-        const updated = [...tags, newTag];
-
         try {
-            const res = await addHabitTag(user.id, newTag);
-            console.log(res);
+            const addedTag = await addHabitTag(user.id, { habitId: habit.id, name: tagName });
+            console.log("✅ Tag successfully added:", addedTag);
+
+            const updated = [...tags, addedTag];
             onChange(updated);
         } catch (err) {
             console.error("Failed to update tags:", err);
@@ -67,8 +66,8 @@ const HabitTags = ({ user, habit, onChange }) => {
         const updated = tags.slice(0, selectedTagIndex).concat(tags.slice(selectedTagIndex + 1));
 
         try {
-            // const res = await removeHabitTag(user.id, tagToDelete);
-            // console.log(res);
+            const res = await removeHabitTag(user.id, tagToDelete);
+            console.log(res);
             onChange(updated);
             setSelectedTagIndex(null);
         } catch (err) {
