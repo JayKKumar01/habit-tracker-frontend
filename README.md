@@ -1,70 +1,142 @@
-# Getting Started with Create React App
+# 📊 Habit Tracker – Frontend (React.js)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🚀 Live Demo
 
-## Available Scripts
+Explore the live application here:
+🔗 **[http://jaykkumar01-habit-tracker.s3-website.eu-north-1.amazonaws.com/](http://jaykkumar01-habit-tracker.s3-website.eu-north-1.amazonaws.com/)**
 
-In the project directory, you can run:
 
-### `npm start`
+## 🖥️ Backend Repository
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+For backend APIs and database logic, refer to the Spring Boot repository:
+🔗 **[JayKKumar01/habit-tracker](https://github.com/JayKKumar01/habit-tracker)**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 📚 Overview
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Habit Tracker** is a full-stack productivity web application built using **React.js** for the frontend and **Spring Boot** for the backend.
+It helps users **build, track, and maintain habits** through a visually engaging and structured interface.
 
-### `npm run build`
+The app encourages consistency and self-improvement by allowing users to:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Create and manage habits
+* Track completion over time
+* View weekly summaries and progress
+* Assign tags to organize tasks better
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## ✨ UI Features
 
-### `npm run eject`
+The frontend offers a clean and modern interface, split into the following components:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 🔐 Authentication
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* **Login Page (`/`)**: Login using registered email/password.
+* **Signup Page (`/signup`)**: Register new account.
+* Dynamic **AuthLink** toggles between login and signup routes.
+* **ProtectedRoute** ensures only logged-in users can access the dashboard.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🏠 Dashboard (`/dashboard`)
 
-## Learn More
+Main workspace after login, consisting of:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### 👋 Welcome Header
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* Greets user by name
+* Displays current week's range
+* Includes **Logout** and **Add Habit** buttons
 
-### Code Splitting
+#### 👤 User Profile (`UserInfoCard`)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+* Shows name, email, join date, and editable bio
+* Editable with save validation and graceful fallbacks
 
-### Analyzing the Bundle Size
+#### ✅ Today’s Tasks (`TodayTaskList`)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+* Displays only habits due **today**
+* Users can mark habits complete/incomplete with confirmation
+* If empty, prompts to create new habits
 
-### Making a Progressive Web App
+#### 📋 Habit Overview (`HabitOverviewGrid`)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+* Scrollable list of active habits
+* Each **HabitCard** includes:
 
-### Advanced Configuration
+  * Title, description, tags
+  * Weekly schedule grid with:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+    * ✔ Completed (`green`)
+    * ✖ Missed (`red`)
+    * ➖ Upcoming (`grey`)
+    * 🚫 Not scheduled (`grey-na`)
+  * Habit streak counter
+  * Edit and delete options
 
-### Deployment
+#### 📈 Weekly Progress (`WeeklyProgressBar`)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+* Visual progress bars for each habit
+* Calculated from current week logs
 
-### `npm run build` fails to minify
+#### 📅 Weekly Logs (`WeeklyLogList`)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* Collapsible cards showing **each week** since registration
+* Per-habit daily logs rendered with emojis and status color
+* Current day highlighted for better orientation
+
+---
+
+## ⚙️ Installation & Running Locally
+
+```bash
+git clone https://github.com/JayKKumar01/habit-tracker-frontend.git
+cd habit-tracker-frontend
+npm install
+npm start
+```
+
+> Make sure the backend is running and accessible via the expected `BASE_URL`.
+> Update it in your React app’s config if needed.
+
+---
+
+## 📂 Project Structure (Frontend)
+
+```bash
+/src
+  ├── components/
+  │   ├── authentication/
+  │   ├── dashboard/
+  │   ├── habit/
+  │   ├── modals/
+  │   ├── profile/
+  │   ├── report/
+  │   └── header/
+  ├── services/
+  ├── utils/
+  ├── styles/
+  └── App.js
+```
+
+---
+
+## 🧪 Technologies Used
+
+* **React.js** with Hooks
+* **React Router** for navigation
+* **Lucide Icons** for UI actions
+* **CSS Modules** for scoped styling
+* **LocalStorage** for token management
+* **JWT Token Watcher** for auto logout on expiry
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome!
+If you’d like to contribute features or report issues, feel free to [open an issue](https://github.com/JayKKumar01/habit-tracker-frontend/issues) or fork the repository.
+
+---
