@@ -6,6 +6,8 @@ Explore the live application here:
 🔗 **[http://jaykkumar01-habit-tracker.s3-website.eu-north-1.amazonaws.com/](http://jaykkumar01-habit-tracker.s3-website.eu-north-1.amazonaws.com/)**
 
 
+
+
 ## 🖥️ Backend Repository
 
 For backend APIs and database logic, refer to the Spring Boot repository:
